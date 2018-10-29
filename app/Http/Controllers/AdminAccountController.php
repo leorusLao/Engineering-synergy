@@ -1,0 +1,255 @@
+<?php
+
+namespace App\Http\Controllers;
+use App;
+use Auth;
+use Session;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+ 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Http\Response;
+use App\Models\User;
+use App\Models\SystemAdm;
+use App\Models\Company;
+use App\Models\UserCompany;
+use App\Models\Buhost;
+use App\Models\BuAdmin;
+
+class AdminAccountController extends  Controller
+{
+	/*
+	 * BU admin Account
+	 */ 
+	public function __construct()
+	{
+		session_start();
+		if(Session::has('locale')){
+			$this->locale = Session::get('locale');
+		}
+		else if(isset($_COOKIE['locale'])){
+			$this->locale = $_COOKIE['locale'];
+		}
+		else{
+			$this->locale = config('app.locale');
+		}
+
+	}
+
+	public function buHome(Request $request, Response $response)
+	{
+		if(! Session::has('userId')) return Redirect::to('/');
+		 
+		return view('platform-bu.home',array('locale' => $this->locale));
+	}
+  
+	 
+	public function login(Request $request,Response $response){
+		
+		if ($request->has ( 'username' )) {
+			$username = trim ( $request->get ( 'username' ) );
+			$password = trim ( $request->get ( 'password' ) );
+			
+			if (filter_var ( $username, FILTER_VALIDATE_EMAIL )) {
+				$identBy = 'email';
+			} elseif (ctype_digit ( $username )) {
+				$identBy = 'mobile';
+			}
+		 
+			if (Auth::guard ( 'web' )->attempt ( [ 
+					$identBy => $username,
+					'password' => $password  
+			] )) {
+				 
+				//进一步检查是否有BU的管理权限
+				
+			    $buAuth = BuAdmin::where('uid',Auth::user ()->uid)->first();
+			    if($buAuth) {
+			    	$userInfo = array (
+			    			'email' => Auth::user ()->email,
+			    			'userId' => Auth::user ()->uid,
+			    			'username' => Auth::user ()->username,
+			    			'userRole' => $buAuth->role_id,
+			    			'mobilePhone' => Auth::user ()->phone,
+			    			'wechat' => Auth::user ()->wechat,
+			    			'bandedEmail' => Auth::user ()->banded_email,
+			    			'bandedMobile' => Auth::user ()->banded_mobile,
+			    			'avatar' => Auth::user ()->avatar,
+			    			'countryId' => Auth::user ()->country_id,
+			    			'buDomain' => $buAuth->bu_site,
+			    			'buName' => $buAuth->bu_name,
+			    			'buId' => $buAuth->bu_id
+			    	);
+			    } else {
+			    	return Redirect::back()->with('result', Lang::get('mowork.not_bu_admin'));
+			    }
+			 
+			Session::put ( 'USERINFO', ( object ) $userInfo );
+			$_SESSION ['userId'] = Auth::user ()->uid; 
+			Session::put ( 'userId', Auth::user ()->uid );
+			Session::put ( 'roleId', $buAuth->role_id );
+			Session::put ( 'buAdmin', true);//Bu Admin
+			Session::put ( 'username', $username );
+			return Redirect::to ( "/pfadmin/home" );
+		  
+			} else {
+		  	  return Redirect::back()->with('result', Lang::get('mowork.account_password_unmatch'));
+		  }
+	   }
+	   
+	   return view('platform-bu.login',array('pageTitle' => Lang::get('mowork.login'),'locale' => $this->locale));
+	}
+     
+	public function loginWechat(Request $request, Response $response)
+	{//微信网页登录
+		 
+		if(! $request->has('uid')) {
+			return Redirect::to('/login');
+		}
+		  
+		// $user = User::where('user.uid',$request->get('uid'))->first();
+		//$user = User::where ( 'user.uid', $request->get ( 'uid' ) )->leftJoin ( 'user_company', 'user_company.uid', '=', 'user.uid' )->select ( 'user.*', 'user_company.role_id' )->first ();
+		
+		// check how many actived companies are associated to this user
+		$attchedCompanys = UserCompany::where ( 'uid',$request->get('uid') )->where ( 'user_company.status', '1' )->join ( 'company', 'company.company_id', '=', 'user_company.company_id' )->select ( 'company.*', 'user_company.role_id' )->get ();
+		Session::put('userId', $request->get('uid'));
+		 
+		if (count ( $attchedCompanys ) > 1) { // multiple companies
+		    // please choose one company to work
+			Session::put('UNIONID',$request->get('unionid'));
+		 	return Redirect::to ( "/select-company" );
+		} else {
+			  if (count ( $attchedCompanys) == 1) {//one company only
+		        	$companyId = $attchedCompanys[0]['company_id'];
+		        	$companyName = $attchedCompanys[0]['company_name'];
+		        	$role_id = $attchedCompanys[0]['role_id'];
+		        	 
+		        	
+		        	$fowardDomain = $attchedCompanys[0]['forward_domain'];
+		        	//###############################################################################
+		        	 
+		        	if($fowardDomain && $role_id > 20) {
+						// 获取6位随机字符串
+						while(true)
+						{
+							$str = randString(6);
+							if(!Redis::exists('uid_'.$str)) {
+								break;
+							}
+						}
+
+						$token = hash('sha256',$str.strtolower($str).strtoupper($str));
+
+						Redis::setex('uid_'.$str,10,$request->get('uid'));
+		        		Redis::setex('companyId_'.$str, 10, $companyId);
+		        		Redis::setex('unionId_'.$str,10, $request->get('unionid'));
+		        		$currentHost = $request->root();
+		        		$currentHost = explode("//", $currentHost);
+		        		$currentDomain = $currentHost[1];
+		        		if($currentDomain != $fowardDomain) {
+		        			return redirect::to('//'.$fowardDomain.'/dashboard/'.$token.'/'.$str);
+		        		}
+		        	}
+		        	//###############################################################################
+		            	 
+		      }	else {//not associated with a company
+		        	$companyId = null;
+		        	$companyName = '';
+		        	$role_id = '51';
+		        	$fowardDomain = '';
+		      }
+		}
+		        
+		$user = User::where ( 'user.uid', $request->get ( 'uid' ) )->leftJoin ( 'user_company', 'user_company.uid', '=', 'user.uid' )->select ( 'user.*', 'user_company.role_id' )->first ();
+		 
+		$salt = $this->wechat_salt;
+		$token = $request->token;  
+		$cmpToken = hash('sha256',$user->api_token.$salt);
+	 
+		if($cmpToken != $token) {
+			return Redirect::to('/login');
+		}
+		  	 
+			//further check 
+		 
+		if(hash('sha256',$user->wechat.$salt) == $request->unionid ){
+				
+			$_SESSION['userId'] = $user->uid;//for avoiding browser back after logout
+			Session::put('username', $user->username);
+			Session::put('userId', $user->uid);
+			 	 	
+			$userInfo =  array('email' => $user->email, 'userId' => $user->uid,'username' => $user->username,'userRole' => $role_id,
+						'mobilePhone' => $user->phone, 'wechat' => $user->wechat, 'companyId' => $companyId, 'companyName' => $companyName, 
+						'avatar' => $user->avatar, 'bandedEmail' => false, 'groupUser' => $user->group_user,
+						'unionid' => $request->unionid,
+						'forwardDomain' => $fowardDomain
+				);
+				Session::put('USERINFO',(object) $userInfo);
+			 
+				return  Redirect::to("/dashboard");
+		}
+		else {
+			return Redirect::to('/login');
+		}
+	 	 
+	}
+ 	 	
+	public function superLogin(Request $request){
+		 
+		if($request->get('submit')){
+			$username = trim($request->get('username'));
+			$password = trim($request->get('password'));
+			$identfier = 'mobile'; //judg if user input email or accounht number
+			if(strpos($request->get('username'),'@')) $identfier = 'email';
+		 
+			if(Auth::guard('admins')->attempt([$identfier => $username, 'password' => $password])){
+
+				Session::put('email',$username);
+				Session::put('AdminUid', Auth::guard('admins')->user()->id);
+				$adm_name = Auth::guard('admins')->user()->adm_name;
+				
+				Session::put('admuser',$adm_name? $adm_name:$username);
+				$_SESSION['admuser'] = Session::get('admuser');//for avoiding browser back after logout
+		        
+				$userInfo = array (
+						'email' => Auth::guard('admins')->user()->email,
+						'userId' => Auth::guard('admins')->user()->id,
+						'username' => Auth::guard('admins')->user()->adm_name
+					 
+				);
+				
+				return  Redirect::to("/pfadmin-su/home");
+			}
+			else{
+		 		return Redirect::to("/pfadmin-su/login")->with('result',Lang::get('mowork.login_failed'));
+			}
+		}
+
+		return view('platform-su.login',array('locale' => $this->locale));
+	}
+
+	public function superHome(Request $request, Response $response)
+	{
+		 
+		if(! Session::has('AdminUid')) return Redirect::to('/');
+			
+		return view('platform-su.home',array('locale' => $this->locale));
+	}
+	
+	
+	public function logout(Request $request){
+		  
+		    $_SESSION = array();
+			session_unset();
+			session_destroy();
+		  
+			$request->session()->flush();
+			return Redirect::to("/");
+		 
+	}
+   	 
+}

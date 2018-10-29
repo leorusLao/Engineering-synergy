@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Models;
+
+use Eloquent;
+
+class PlanType extends Eloquent {
+	protected $primaryKey = 'type_id';
+	protected $table = 'plan_type';
+	protected $fillable = array (
+			'type_code', 'type_name', 'type_name_en', 
+			'company_id', 'bu_id' 
+	);
+	protected $guarded = array (
+			'type_id'
+	);
+
+	public $timestamps = true;
+
+	static public function isExistedPlanType ($typeCode, $companyId)
+	{
+		$row = self::where('type_code',$typeCode)->whereRaw("company_id = $companyId")->first();
+
+		if($row) return true;
+		return false;
+	}
+
+	static public function addPlanType($typeCode, $typeName, $typeNameEn, $companyId = 0)
+	{
+		return self::create(array('type_code' => $typeCode, 'type_name' => empty($typeName)? '':$typeName, 'type_name_en' => empty($typeNameEn)?'' : $typeNameEn, 'company_id' => $companyId));
+	}
+
+	static public function deletePlanType($typeId, $companyId)
+	{
+		return self::where(array('type_id' => $typeId, 'company_id' => $companyId))->delete();
+	}
+
+	static public function updatePlanType($typeId, $typeCode, $typeName, $typeNameEn, $companyId)
+	{
+		return self::where(array('type_id' => $typeId, 'company_id' => $companyId))->update(array('type_code' => $typeCode, 'type_name' => empty($typeName)? '':$typeName, 'type_name_en' => empty($typeNameEn)?'' : $typeNameEn, 'company_id' => $companyId));
+	}
+
+	public static function getPlanTypes($company_id)
+	{ 
+		$result = self::Where(['company_id'=>$company_id])
+					->select('type_id','type_name')->get();
+		return $result;
+	}
+
+}
+
+?>

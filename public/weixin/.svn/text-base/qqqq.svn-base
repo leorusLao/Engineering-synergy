@@ -1,0 +1,19 @@
+site===Array
+(
+    [openid] => oYLsOwVXADoGRyutjkkX0No9GNwI
+    [nickname] => 铂洋
+    [sex] => 1
+    [language] => zh_CN
+    [city] => Port Moody
+    [province] => British Columbia
+    [country] => CA
+    [headimgurl] => http://wx.qlogo.cn/mmopen/vi_32/BqCPu9GVaq1YdaAsnEj3kbfeS3TYMY5vAiaJibz9TDJCuOLuib0JUtvyNWlicCZCOhKTcicNZZJqZEtDtsPnIuKEz8Q/132
+    [privilege] => Array
+        (
+        )
+
+    [unionid] => oP4Xow97fYEeJ6UMKkS87GFmePJg
+    [client_type] => 3
+    [identity_type] => wechat
+    [band_uid] => 13
+)

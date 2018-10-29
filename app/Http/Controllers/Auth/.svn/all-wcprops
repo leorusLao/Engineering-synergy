@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/mw2030/!svn/ver/1/project-master/trunk/app/Http/Controllers/Auth
+END
+ResetPasswordController.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/1/project-master/trunk/app/Http/Controllers/Auth/ResetPasswordController.php
+END
+ForgotPasswordController.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/mw2030/!svn/ver/1/project-master/trunk/app/Http/Controllers/Auth/ForgotPasswordController.php
+END
+RegisterController.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/1/project-master/trunk/app/Http/Controllers/Auth/RegisterController.php
+END
+LoginController.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/app/Http/Controllers/Auth/LoginController.php
+END

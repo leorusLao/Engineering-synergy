@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer
+END
+LICENSE
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/LICENSE
+END
+autoload_static.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/autoload_static.php
+END
+autoload_real.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/autoload_real.php
+END
+ClassLoader.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/ClassLoader.php
+END
+autoload_classmap.php
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/autoload_classmap.php
+END
+autoload_psr4.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/autoload_psr4.php
+END
+installed.json
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/installed.json
+END
+autoload_namespaces.php
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin_account/vendor/composer/autoload_namespaces.php
+END

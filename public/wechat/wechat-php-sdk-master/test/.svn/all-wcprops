@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/test
+END
+auth.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/test/auth.php
+END
+merchanttest.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/test/merchanttest.php
+END
+qydemo.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/test/qydemo.php
+END
+test-upload-shake-around-media.php
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/test/test-upload-shake-around-media.php
+END
+getQRCode_test.php
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/test/getQRCode_test.php
+END
+test1.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/test/test1.php
+END

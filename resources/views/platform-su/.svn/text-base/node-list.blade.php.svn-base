@@ -1,0 +1,381 @@
+@extends('pfadmin-base')
+  
+@section('content')
+
+<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+ 
+ <div class="margin-b20">
+	<a href='#formholder' rel="tooltip" class="add"
+		data-placement="right" data-toggle="modal"
+		data-placement="right" 
+		data-original-title="{{Lang::get('mowork.add').Lang::get('mowork.node')}}">
+		<span class="glyphicon glyphicon-plus">{{Lang::get('mowork.add')}}{{Lang::get('mowork.node')}}
+		</span>
+	</a>
+ </div>
+    <form action='/dashboard/project-config/node-list' method='POST' id="filter_form"> 
+    {{Form::select('type_filter', $nodeTypeList, '', array('class' => '','id' => 'type_filter'))}}
+    <input name="_token" type="hidden" value="{{ csrf_token() }}">
+    </form>
+   
+	@if(Session::has('result'))
+	<div class="text-center text-danger margin-b20">{{Session::get('result')}}</div>
+	@endif 
+	@if(count($rows))
+
+    <div class="table-responsive table-scrollable">
+	<table class="table data-table table-bordered">
+
+		<thead>
+			<tr>
+				<th>{{Lang::get('mowork.node_code')}}</th>
+				<th>{{Lang::get('mowork.node').Lang::get('mowork.name')}}</th>
+				 
+  				<th>{{Lang::get('mowork.in_english')}}</th>
+  				<th>{{Lang::get('mowork.node_type')}}</th>
+  			 	 
+  				<th>{{Lang::get('mowork.is_push')}}</th>
+  				<th>{{Lang::get('mowork.is_key_node')}}</th>
+  				<th>{{Lang::get('mowork.is_expandable')}}</th>
+  			 	<th>{{Lang::get('mowork.maintenance')}}</th>
+			</tr>
+		</thead>
+
+		<tbody>
+
+			@endif
+			
+			@foreach($rows as $row)
+ 
+			<tr>
+				<td>{{ $row->node_no }}</td>
+				<td>{{ $row->name}}</td>
+			 
+				<td>{{ $row->name_en }}</td>
+				
+				<td>{{ $nodeTypeList[$row->type_id] }}</td> 
+			    <td>
+			    	@if( $row->is_push == 1) {{Lang::get('mowork.yes')}} 
+			    	@else {{Lang::get('mowork.no')}} 
+			    	@endif
+			    </td>
+			    <td>
+			    	@if( $row->key_node == 1 ) {{Lang::get('mowork.yes')}} 
+			    	@else {{Lang::get('mowork.no')}} 
+			    	@endif
+			    </td>
+			    <td>
+			    	@if( $row->expandable  == 1 ) {{Lang::get('mowork.yes')}} 
+			    	@else {{Lang::get('mowork.no')}} 
+			    	@endif
+			    </td>
+			  	<td>
+			  		<a href="#formholder" rel="tooltip" data-placement="right" data-toggle="modal" class="edit" data-placement="right" data-original-title="{{Lang::get('mowork.edit')}}" data-node_id="{{$row->node_id}}" data-node_no="{{$row->node_no}}" data-name="{{$row->name}}" data-name_en="{{ $row->name_en}}" data-category="{{$row->category}}" data-type_id="{{$row->type_id}}" data-is_push="{{$row->is_push}}" data-key_node="{{$row->key_node}}" data-expandable="{{$row->expandables}}" >
+			  			<span class="glyphicon glyphicon-edit"></span>
+			  		</a>&nbsp; &nbsp;
+			  		<a rel="tooltip" data-placement="right" data-original-title="{{Lang::get('mowork.delete')}}" class="delete" >
+			  			<span class="glyphicon glyphicon-trash"></span>
+			  		</a>
+			    </td>
+			</tr>
+
+			@endforeach 
+			
+			@if(count($rows))
+
+		</tbody>
+     
+	</table>
+    </div>
+    <div class='text-center'>
+     {{Lang::get('mowork.batch_note')}} <a class="btn btn-sm btn-info" href="/dashboard/project-config/batch-customize-node" target="_blank">{{Lang::get('mowork.batch_customize')}}</a></div>       
+	<div class='text-center'><?php echo $rows->links(); ?></div>
+
+	<div class="clearfix"></div>
+	@endif
+
+</div>
+
+<div class="modal fade" id="formholder">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">X</button>
+				<h4 class="modal-title text-center">{{Lang::get('mowork.node')}}{{Lang::get('mowork.basic_info')}}</h4>
+			</div>
+			<div class="modal-body pull-center text-center">
+				<form action='/dashboard/project-config/node-list' method='post'
+					autocomplete='off' role=form class="add_edit" onsubmit='return validateForm();'>
+					
+					<div class="form-group input-group">
+					    <div class="input-group-addon">
+						<i class="livicon" data-name="doc-portrait" data-size="18" data-c="#000" data-hc="#000" data-loop="true">{{Lang::get('mowork.node_code')}} *</i>
+						</div>
+						 
+						<input type="text" class="form-control" name="node_no" id='node_no'>
+					</div>
+				 		
+					 
+					<div class="form-group input-group">
+					    <div class="input-group-addon">
+						<i class="livicon" data-name="doc-portrait" data-size="18" data-c="#000" data-hc="#000" data-loop="true">{{Lang::get('mowork.node_type')}} *</i>
+						</div>
+				 		{{Form::select('type_id', $nodeTypeList, '', array('class' => 'form-control','id' => 'type_id'))}}
+					</div>
+			 	 	 
+				 	<div class="form-group input-group">
+					    <div class="input-group-addon">
+						<i class="livicon" data-name="doc-portrait" data-size="18" data-c="#000" data-hc="#000" data-loop="true">{{Lang::get('mowork.node').Lang::get('mowork.name')}} *</i>
+						</div>
+						<input type="text" class="form-control" name="name"
+							 id='name' / >
+					</div>
+					
+					<div class="form-group input-group">
+					    <div class="input-group-addon">
+						<i class="livicon" data-name="doc-portrait" data-size="18" data-c="#000" data-hc="#000" data-loop="true">{{Lang::get('mowork.node').Lang::get('mowork.in_english')}} *</i>
+						</div>
+						<input type="text" class="form-control" name="name_en"
+							 id='name_en' / >
+					</div>
+
+					<div class="form-group input-group">
+					    <div class="input-group-addon">
+						<i class="livicon" data-name="doc-portrait" data-size="18" data-c="#000" data-hc="#000" data-loop="true">{{Lang::get('mowork.is_push')}}</i>
+						</div>
+				 		<select autocomplete="off" class="form-control" name="is_push" id="is_push">
+				 			<option value="1">{{Lang::get('mowork.yes')}}</option>
+				 			<option value="0">{{Lang::get('mowork.no')}}</option>
+				 		</select>
+					</div>
+
+					<div class="form-group input-group">
+					    <div class="input-group-addon">
+						<i class="livicon" data-name="doc-portrait" data-size="18" data-c="#000" data-hc="#000" data-loop="true">{{Lang::get('mowork.is_key_node')}}</i>
+						</div>
+				 		<select autocomplete="off" class="form-control" name="key_node" id="key_node">
+				 			<option value="1">{{Lang::get('mowork.yes')}}</option>
+				 			<option value="0">{{Lang::get('mowork.no')}}</option>
+				 		</select>
+					</div>
+
+					<div class="form-group input-group">
+					    <div class="input-group-addon">
+						<i class="livicon" data-name="doc-portrait" data-size="18" data-c="#000" data-hc="#000" data-loop="true">{{Lang::get('mowork.is_expandable')}}</i>
+						</div>
+				 		<select autocomplete="off" class="form-control" name="expandable" id="expandable">
+				 			<option value="1">{{Lang::get('mowork.yes')}}</option>
+				 			<option value="0">{{Lang::get('mowork.no')}}</option>
+				 		</select>
+					</div>
+			 		 
+					<div class="clearfix"></div>
+				    <input type="submit" class="btn-info btn-sm" name="submit" id="submit" style="display: none"
+							value="{{Lang::get('mowork.add')}}">
+					<input name="_token" type="hidden" value="{{ csrf_token() }}">
+				</form>
+				<!-- 
+				<div id="tmpfile">
+                <form action="{{ url('/upload/instruction') }}" class="dropzone" id="mydropzone" style="min-height: 50px;margin-top:-5px">
+                <input name="_token" value="{{ csrf_token() }}" type="hidden">
+                </form>
+                </div>
+                -->
+			</div>
+			<!-- <div class="modal-footer margin-t20"></div> -->
+			<div class="text-center" style="margin-bottom: 20px;">
+				<button type="button" class="click" >{{Lang::get('mowork.add')}}</button>
+				<!-- <button type="button" data-dismiss="modal" class="btn-warning ">X</button> -->
+			</div>
+			<form method="post" style="display: none;" class="delete_form">
+				<input type="hidden" name="node_id">
+				<input type="submit" name="submit" value="delete">
+				<input type="hidden" name="_token" value="{{ csrf_token() }}">
+			</form>	
+		</div>
+	</div>
+</div>
+@stop 
+
+@section('footer.append')
+ 
+<link media="all" type="text/css" rel="stylesheet" href="/asset/dropzone4/dropzone.css">
+<script type="text/javascript" src="/asset/dropzone4/dropzone.js"></script>
+<script type="text/javascript">
+$("[rel=tooltip]").tooltip({animation:false});
+
+    $(function(){
+
+    	// 编辑
+    	$('.edit').click(function(){
+    		var obj = $(this);
+    		$('.add_edit').find('input[name="node_id"]').remove();
+    		$('.add_edit').append('<input type="hidden" name="node_id" value="' + obj.data('node_id') + '"/ >')
+
+
+    		$('#node_no').val(obj.data('node_no'));
+    		$('#type_id').find('option').each(function(){
+    			$(this).prop('selected', false);
+    			if($(this).val() == obj.data('type_id')) {
+    				$(this).prop('selected',true);
+    			}
+    		});
+    		$('#name').val(obj.data('name'));
+    		$('#name_en').val(obj.data('name_en'));
+    		$('#is_push').find('option').first().val() == obj.data('is_push') ? $('#is_push').find('option').first().prop('selected', true) : $('#is_push').find('option').last().prop('selected', true);
+    		
+    		// $('#key_node').find('option').prop('selected', false);
+    		
+    		// $('#expandable').find('option').prop('selected', false);
+    		$('#key_node').find('option').first().val() == obj.data('key_node') ? $('#key_node').find('option').first().prop('selected', true) : $('#key_node').find('option').last().prop('selected', true);
+    		$('#expandable').find('option').first().val() == obj.data('expandable') ? $('#expandable').find('option').first().prop('selected', true) : $('#expandable').find('option').last().prop('selected', true);
+
+
+    		$('.click').text("{{Lang::get('mowork.edit')}}");
+
+    	});
+    	// 新增
+    	$('.add').click(function(){
+    		$('.add_edit').find('input[name="node_id"]').remove();
+    		$('.add_edit').find('input').val('');
+    		$('#key_node').find('option').last().prop('selected', true);
+    		$('#expandable').find('option').last().prop('selected', true);
+    		$('#submit').val("{{Lang::get('mowork.add')}}");
+    		$('.click').text("{{Lang::get('mowork.add')}}");
+    		$('.add_edit').find('input').last().val($('#filter_form').find('input').last().val()); 
+    	});
+
+    	$('.click').click(function(){		
+    		$('#submit').trigger('click')    			
+    	});
+
+    	// 删除
+    	$('.delete').click(function(){
+    		if(confirm('{{Lang::get('mowork.want_delete')}}') == true) {
+    			$('.delete_form').find('input').first().val($(this).prev().data('node_id'));
+    			$('.delete_form').find('input').first().next().click();
+    		}
+    	});
+
+      $('#type_filter').change(function() {
+            filter_id = $('#type_filter').val();
+            $(this).closest('form').trigger('submit');
+       })
+        
+      $('#me8').addClass('active');   
+
+  	  $('#mydropzone').click(function(event){
+	      	event.preventDefault();
+	  	  });
+	     
+	  Dropzone.options.mydropzone={
+	    	maxFiles: 1, 
+	      	maxFilesize: 4,
+	      	acceptedFiles: ".pdf,.docx,.doc",
+	          addRemoveLinks: true,
+	          dictDefaultMessage: "<span class='text-warning'>{{Lang::get('mowork.upload_standard')}}</span>",
+	          dictFileTooBig: "{{Lang::get('mowork.image_too_big')}}",
+	          dictRemoveFile: "{{Lang::get('mowork.cancel_image')}}",
+	          dictInvalidFileType: "{{Lang::get('mowork.image_type_error')}}",
+	          dictMaxFilesExceeded: "{{Lang::get('mowork.exceed_max_files')}}",
+	          init: function() {
+	        
+	        this.on("maxfilesexceeded", function(file){
+	      	 
+	             this.removeFile(file);
+	        });	
+	         
+	        this.on("error", function(file, responseText) {
+	            
+	             alert("{{Lang::get('mowork.upload_file_error')}}");
+	             this.removeFile(file);
+	             //console.log(file);
+	        });
+	        
+	        this.on("success", function(file, responseText) {
+	            
+	            console.log(file);
+	       });
+	        
+	      },
+
+	      
+	      removedfile: function(file) {
+	     	 
+	          var name = file.name;  
+	          
+	        	$.ajax({
+	          	type: 'POST',
+	          	url: "{{url('/relink')}}",
+	          	 
+	          	 data: {
+	                   fname: name,//fullpath for this uploaded file to be deleted
+	                   _token: "{{ csrf_token() }}" 
+	              },
+	              success: function( data ) {
+	              },
+	              error: function(xhr, status, error) {
+	                   alert(error);
+	              },
+	              dataType: 'html'  //use type html rather than json in order to post token 
+	      	});
+	      	 
+	  		var _ref;
+	  		return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;        
+	        }
+	     }
+             
+
+     });
+
+
+    function validateForm(){
+      errors = '';
+
+      node_no = $.trim($('#node_no').val());	 
+      type_id = $('#type_id option:selected').val(); 
+      name = $.trim($('#name').val());
+      name_en = $.trim($('#name_en').val());
+
+      if(node_no.length < 1) {
+        errors += "{{Lang::get('mowork.nodecode_required')}} \n";	
+      }
+      
+      if(type_id < 1) {
+      	errors += "{{Lang::get('mowork.typename_required')}} \n";	
+      }
+
+      if(name.length < 1) {
+          errors += "{{Lang::get('mowork.nodename_required')}}\n";	
+      }
+
+      if(name_en.length < 1) {
+          errors += "{{Lang::get('mowork.nodenameen_required')}}\n";	
+      }
+       
+      if(errors.length > 0) {
+    	alert(errors);
+    	return false;
+      }
+      return true;
+      
+    }
+
+    function popwin(str)
+    {    
+    	   var left = (screen.width/2)-(440/2);
+           var top = (screen.height/2)-(500/2);
+            
+    	   window.open("/dashboard/project-config/customize-node/" + str, 'win'+str, 'height=500,width=440,top='+top+', left='+left);
+  	 
+    } 
+
+   	function batchNodeCustomize() {
+		
+		
+   	}
+</script>
+
+
+@stop

@@ -1,0 +1,54 @@
+8
+
+dir
+283
+http://www.mowork.cn/svn/mw2030/project-master/trunk/public/asset/bootstrap-colorpicker/js
+http://www.mowork.cn/svn/mw2030
+
+
+
+2018-01-12T09:26:32.364107Z
+1
+boby
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+924d6106-cfb9-4846-872e-a9df65f53776
+
+bootstrap-colorpicker.js
+file
+
+
+
+
+2018-01-15T12:10:48.000000Z
+6fb60b5313722b3458f6ca69469e86f7
+2018-01-12T09:26:32.364107Z
+1
+boby
+has-props
+
+bootstrap-colorpicker.min.js
+file
+
+
+
+
+2018-01-15T12:10:48.000000Z
+91465eff856bb0cc9b0aa33e4e4a484f
+2018-01-12T09:26:32.364107Z
+1
+boby
+has-props
+

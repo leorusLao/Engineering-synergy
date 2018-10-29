@@ -1,0 +1,68 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: wenson
+ * Date: 2018/2/8
+ * Time: 17:38
+ */
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Model;
+
+class Permissions extends Model
+{
+    use SoftDeletes;
+    protected $table ='permissions';
+    protected $dates = ['deleted_at'];
+    public function permissionsData($where)
+    {
+        $data = [];
+
+        $data = $this->where($where)
+            ->orderBy('sort', 'asc')
+            ->get(['id', 'pid', 'sort', 'display_name', 'is_menu'])
+            ->toArray();
+        return $this->getLevel($data, 0, 0);
+    }
+
+    private function getLevel($arr,$pid,$step){
+        global $tree;
+        foreach($arr as $key=>$val) {
+            if($val['pid'] == $pid) {
+//                $flg = str_repeat('└―',$step);
+//                $val['display_name'] = $flg.$val['display_name'];
+                $val['flg'] = str_repeat('&emsp;&emsp;', $step);
+                $val['_flg'] = str_repeat('└―',$step);
+                $tree[] = $val;
+                $this->getLevel($arr , $val['id'] ,$step+1);
+            }
+        }
+        return $tree;
+    }
+
+    public function getTreeData($where)
+    {
+        $data = $this->where($where)
+            ->orderBy('sort', 'asc')
+            ->get()
+            ->toArray();
+        return $this->getTree($data, 0);
+    }
+
+    private function getTree($data, $pid)
+    {
+        $tree = [];
+        foreach($data as $k => $v)
+        {
+            if($v['pid'] == $pid)
+            {        //父亲找到儿子
+                $v['children'] = $this->getTree($data, $v['id']);
+                $tree[] = $v;
+                //unset($data[$k]);
+            }
+        }
+        return $tree;
+    }
+
+}

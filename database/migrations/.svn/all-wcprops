@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/mw2030/!svn/ver/1/project-master/trunk/database/migrations
+END
+2014_10_12_000000_create_users_table.php
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/mw2030/!svn/ver/1/project-master/trunk/database/migrations/2014_10_12_000000_create_users_table.php
+END
+2014_10_12_100000_create_password_resets_table.php
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/mw2030/!svn/ver/1/project-master/trunk/database/migrations/2014_10_12_100000_create_password_resets_table.php
+END
+2017_11_15_085552_create_media_table.php
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/mw2030/!svn/ver/1/project-master/trunk/database/migrations/2017_11_15_085552_create_media_table.php
+END

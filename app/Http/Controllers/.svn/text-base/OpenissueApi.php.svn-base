@@ -1,0 +1,177 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+use App;
+use DB;
+use Session;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Http\Controllers\CheckApi;
+use App\Models\Project;
+use App\Models\Company;
+use App\Models\ProjectDetail;
+use App\Models\ProjectRelation;
+use App\Models\WorkCalendar;
+use App\Models\ProjectType;
+use App\Models\Department;
+use App\Http\Controllers\InitController;
+use App\Models\Customer;
+
+class OpenissueApi extends App\Http\Controllers\Controller
+{
+
+    /** 
+    * 获取OPENISSUE来源列表
+    * @param 
+    * @return 
+    */    
+    public function listSource(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 获取OPENISSUE项目列表
+    * @param 
+    * @return 
+    */    
+    public function listProjectIssue(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 获取OPENISSUE计划列表
+    * @param 
+    * @return 
+    */    
+    public function listPlanIssue(Request $request,Response $response)
+    {
+
+	}
+
+    /** 
+    * 新增OPENISSUE
+    * @param 
+    * @return 
+    */    
+    public function createOpenIssue(Request $request,Response $response)
+    {
+
+	}
+
+    /** 
+    * 修改OPENISSUE
+    * @param 
+    * @return 
+    */    
+    public function updateOpenIssue(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 获取待审批OPENISSUE列表
+    * @param 
+    * @return 
+    */    
+    public function listPending(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 获取已审批OPENISSUE列表
+    * @param 
+    * @return 
+    */    
+    public function listApproved(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 获取已审批OPENISSUE详情
+    * @param 
+    * @return 
+    */    
+    public function getOpenIssue(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 提交OPENISSUE审批
+    * @param 
+    * @return 
+    */    
+    public function updateApproval(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 更改OPENISSUE审批结果
+    * @param 
+    * @return 
+    */    
+    public function updateApprovalResult(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 获取(某项目、计划下)OPENISSUE列表(可能不需要)
+    * @param 
+    * @return 
+    */    
+    public function listOpenIssue(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 获取公司下OPENISSUE列表
+    * @param 
+    * @return 
+    */    
+    public function listOpenIssueAll(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 删除OPENISSUE
+    * @param 
+    * @return 
+    */    
+    public function deleteOpenIssue(Request $request,Response $response)
+    {
+
+	}
+
+
+    /** 
+    * 更改OPENISSUE进度
+    * @param 
+    * @return 
+    */    
+    public function updateStatus(Request $request,Response $response)
+    {
+
+	}
+
+
+
+
+}

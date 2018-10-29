@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/mw2030/!svn/ver/1/project-master/trunk/database/factories
+END
+UserFactory.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/mw2030/!svn/ver/1/project-master/trunk/database/factories/UserFactory.php
+END
+ModelFactory.php
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/mw2030/!svn/ver/1/project-master/trunk/database/factories/ModelFactory.php
+END

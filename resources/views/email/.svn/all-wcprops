@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/email
+END
+password-getcode-zh-cn.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/email/password-getcode-zh-cn.blade.php
+END
+welcome-zh-cn.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/email/welcome-zh-cn.blade.php
+END
+welcome-en.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/email/welcome-en.blade.php
+END
+password-reset-en.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/email/password-reset-en.blade.php
+END
+password-reset-zh-cn.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/email/password-reset-zh-cn.blade.php
+END

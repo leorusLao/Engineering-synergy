@@ -1,0 +1,87 @@
+<?php
+namespace App\Http\Controllers;
+use App;
+
+use App\Models\Folder;
+use Illuminate\Support\Facades\Route;
+use Session;
+use Cookie;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
+
+Class UploadFileController extends Controller {
+ 
+ 	public function uploader(Request $request, $classfication)
+ 	{
+      	//temporary save the uploading file to temp directory
+      	session_start();
+
+    	$file = $request->file('file');
+    	$filename = str_replace(' ','',$file->getClientOriginalName());
+    	$extension = strtolower($file->getClientOriginalExtension());
+    	//批次上传文件时候，根据不同类型编号命名文件。方便后面新增文件到不同类型中！
+        $newfile = session_id().$filename;
+        if($request -> part_number != null){
+            $newfile = session_id().$request ->part_number.$filename;
+        }
+        if($request -> plan_number != null){
+            $newfile = session_id().$request ->plan_number.$filename;
+        }
+    	if($classfication == 'license') {//upload company's business license
+    		 
+    		$destinationPath =  storage_path().'/tmp';//temporarily save to tmp floder
+    		Session::put('LICENSE', $newfile) ;
+    	 
+    		$upload_success = $request->file('file')->move($destinationPath, $newfile);
+    		if( $upload_success ) {
+    			return $newfile;//let the client end knows which file will be deleted when necessary
+    		}
+    	}
+    	else if($classfication == 'employee-list') {//upload company's business license
+    		 
+    		$destinationPath =  storage_path().'/tmp';//temporarily save to tmp floder
+    		Session::put('EMPLOYEELIST', $newfile) ;
+    	
+    		$upload_success = $request->file('file')->move($destinationPath, $newfile);
+    		if( $upload_success ) {
+    			return $newfile;//let the client end knows which file will be deleted when necessary
+    		}
+    	} else if($classfication == 'instruction') {//upload instruction file
+    		$destinationPath =  storage_path().'/tmp';//temporarily save to tmp floder
+    		Session::put('INSTRUCTIONFILE', $newfile) ;
+    		$upload_success = $request->file('file')->move($destinationPath, $newfile);
+    	 
+    		//*for multiple images
+    		if(!isset($_SESSION['NumOfFiles'])){
+    			$_SESSION['NumOfFiles'] = 1;
+    			$_SESSION['FileNames'] = array('0' => $newfile) ;
+    		}
+    		else{
+    			$_SESSION['NumOfFiles'] = $_SESSION['NumOfFiles'] + 1;
+    			array_push($_SESSION['FileNames'],$newfile);
+    		}
+    		if( $upload_success ) {
+				//-------------------------------------------------------
+				try{
+//					$filePath = 'storage/tmp/'.iconv('UTF-8', 'GBK', $newfile);
+//					$filePath = 'storage/tmp/'.mb_convert_encoding($newfile, 'GBK', 'UTF-8');
+					$filePath = 'storage/tmp/'.$newfile;
+					$data = Folder::readExcel([$filePath]);
+					Log::debug($data);
+				}catch(\Exception $e){
+					Log::debug('ERROR: '.$e->getMessage());
+				}
+				//-------------------------------------------------------
+    			return $newfile;//let the client end knows which file will be deleted when necessary
+    		}
+    	}
+	    
+    	return Response::json('error', 400);
+    	 
+		  
+     }
+}
+
+?>

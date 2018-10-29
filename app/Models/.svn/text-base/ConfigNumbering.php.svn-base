@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Models;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class ConfigNumbering extends Model {
+	use SoftDeletes;
+
+	protected $primaryKey = 'id';
+	protected $table = 'config_num';
+	protected $fillable = array (
+			'description', 'description_en', 'prefix', 'cycle', 'cycle_en',
+			'yyyy', 'mm', 'dd', 'serial_length', 'company_id'
+	);
+	protected $guarded = array (
+			'id' 
+	);
+
+	protected $dates = ['deleted_at'];
+
+	public $timestamps = true;
+	
+	static public function isExistedPrefix($prefix, $companyId, $id) {
+		$existed = self::whereRaw('(company_id = 0 OR company_id='. $companyId .')')->where('prefix',$prefix)->where('id', '<>', $id)->first();
+		if($existed) return true;
+		return false;
+	}
+	
+	static public function addNumberingSet($prefix, $description, $descriptionEn, $cycle, $cycle_en, $yyyy, $mm, $dayflag, $serialLength, $companyId)
+	{
+		return self::create(array('prefix' => $prefix, 'description' => $description, 'description_en' => $descriptionEn,
+			'cycle' => $cycle, 'cycle_en' => $cycle_en,	'yyyy' => $yyyy, 'mm' => $mm, 'dd' => $dayflag,
+			'serial_length' => $serialLength, 'company_id' => $companyId));
+ 	}
+ 	
+ 	static public function deleteNumberingSet($id, $companyId)
+ 	{
+ 		self::where(array('id' => $id, 'company_id' => $companyId))->delete();
+ 	}
+ 	
+ 	static public function updateNumberingSet($id, $prefix, $description, $descriptionEn, $cycle, $cycle_en, $yyyy, $mm, $dd, $serialLength)
+ 	{
+ 		return self::where(array('id' => $id))->update(array('prefix' => $prefix, 'description' => $description, 'description_en' => $descriptionEn, 'cycle' => $cycle, 'cycle_en' => $cycle_en, 'yyyy' => $yyyy, 'mm' => $mm, 'dd' => $dd,
+ 				'serial_length' => $serialLength));
+ 		
+ 	}
+ }
+
+?>

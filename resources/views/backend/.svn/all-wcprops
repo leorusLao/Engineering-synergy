@@ -1,0 +1,509 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/mw2030/!svn/ver/280/project-master/trunk/resources/views/backend
+END
+customize-node.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/customize-node.blade.php
+END
+supplier.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/supplier.blade.php
+END
+plan-start-alert.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/plan-start-alert.blade.php
+END
+issue-source.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/238/project-master/trunk/resources/views/backend/issue-source.blade.php
+END
+currency.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/currency.blade.php
+END
+workday-setup.org.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/workday-setup.org.blade.php
+END
+tool-file.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/tool-file.blade.php
+END
+department.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/mw2030/!svn/ver/212/project-master/trunk/resources/views/backend/department.blade.php
+END
+part-type.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/244/project-master/trunk/resources/views/backend/part-type.blade.php
+END
+company-approver.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/company-approver.blade.php
+END
+order-history.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/order-history.blade.php
+END
+make-invitation.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/make-invitation.blade.php
+END
+customer-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/customer-edit.blade.php
+END
+plan-type-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/244/project-master/trunk/resources/views/backend/plan-type-edit.blade.php
+END
+company-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/mw2030/!svn/ver/6/project-master/trunk/resources/views/backend/company-edit.blade.php
+END
+workday-setup.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/244/project-master/trunk/resources/views/backend/workday-setup.blade.php
+END
+my-company.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/mw2030/!svn/ver/270/project-master/trunk/resources/views/backend/my-company.blade.php
+END
+supplier-select.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/supplier-select.blade.php
+END
+plan-type.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/244/project-master/trunk/resources/views/backend/plan-type.blade.php
+END
+issue-plan-date.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/issue-plan-date.blade.php
+END
+customer.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/customer.blade.php
+END
+employee-edit-org.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/employee-edit-org.blade.php
+END
+node-type.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/254/project-master/trunk/resources/views/backend/node-type.blade.php
+END
+department-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/204/project-master/trunk/resources/views/backend/department-edit.blade.php
+END
+issue-alert.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/issue-alert.blade.php
+END
+position.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/mw2030/!svn/ver/219/project-master/trunk/resources/views/backend/position.blade.php
+END
+enter-worksite.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/221/project-master/trunk/resources/views/backend/enter-worksite.blade.php
+END
+project-type.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/204/project-master/trunk/resources/views/backend/project-type.blade.php
+END
+company-creation.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/278/project-master/trunk/resources/views/backend/company-creation.blade.php
+END
+department-calendar-select.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/department-calendar-select.blade.php
+END
+work-shift-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/work-shift-edit.blade.php
+END
+issue-class-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/issue-class-edit.blade.php
+END
+issue-reported-date.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/issue-reported-date.blade.php
+END
+serial-number-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/serial-number-edit.blade.php
+END
+calendar-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/calendar-edit.blade.php
+END
+role-management.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/role-management.blade.php
+END
+make-invitation-1.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/make-invitation-1.blade.php
+END
+role-control.org.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/role-control.org.blade.php
+END
+batch-customize-node.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/batch-customize-node.blade.php
+END
+other-setup.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/263/project-master/trunk/resources/views/backend/other-setup.blade.php
+END
+plan-completion.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/plan-completion.blade.php
+END
+role-assignment.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/role-assignment.blade.php
+END
+issue-class.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/238/project-master/trunk/resources/views/backend/issue-class.blade.php
+END
+role-control.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/65/project-master/trunk/resources/views/backend/role-control.blade.php
+END
+issue-source-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/issue-source-edit.blade.php
+END
+employee-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/245/project-master/trunk/resources/views/backend/employee-edit.blade.php
+END
+mowork.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/mowork.php
+END
+customer-select.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/customer-select.blade.php
+END
+plan-completion-alert.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/plan-completion-alert.blade.php
+END
+add-measurement.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/add-measurement.blade.php
+END
+group-add.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/group-add.blade.php
+END
+role-resource-map.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/role-resource-map.blade.php
+END
+dashboard.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/mw2030/!svn/ver/5/project-master/trunk/resources/views/backend/dashboard.blade.php
+END
+bind-wechat-result.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/bind-wechat-result.blade.php
+END
+country.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/mw2030/!svn/ver/64/project-master/trunk/resources/views/backend/country.blade.php
+END
+departday-setup.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/departday-setup.blade.php
+END
+change-password.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/change-password.blade.php
+END
+company-profile.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/51/project-master/trunk/resources/views/backend/company-profile.blade.php
+END
+personal-profile.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/personal-profile.blade.php
+END
+part-type-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/244/project-master/trunk/resources/views/backend/part-type-edit.blade.php
+END
+account-management.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/account-management.blade.php
+END
+purchase-service.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/purchase-service.blade.php
+END
+city.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/city.blade.php
+END
+employee.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/mw2030/!svn/ver/244/project-master/trunk/resources/views/backend/employee.blade.php
+END
+position-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/212/project-master/trunk/resources/views/backend/position-edit.blade.php
+END
+province.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/province.blade.php
+END
+node-type-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/254/project-master/trunk/resources/views/backend/node-type-edit.blade.php
+END
+admin-region.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/admin-region.blade.php
+END
+node-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/node-edit.blade.php
+END
+bind-wechat.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/bind-wechat.blade.php
+END
+edit-measurement.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/edit-measurement.blade.php
+END
+measurement.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/measurement.blade.php
+END
+calendar.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/mw2030/!svn/ver/254/project-master/trunk/resources/views/backend/calendar.blade.php
+END
+plan-start.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/plan-start.blade.php
+END
+associate-user-to-company.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/associate-user-to-company.blade.php
+END
+permission-management.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/mw2030/!svn/ver/232/project-master/trunk/resources/views/backend/permission-management.blade.php
+END
+serial-number.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/serial-number.blade.php
+END
+node-setting.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/node-setting.blade.php
+END
+work-shift.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/work-shift.blade.php
+END
+tool-file-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/tool-file-edit.blade.php
+END
+department-delay.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/department-delay.blade.php
+END
+issue-real-date.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/backend/issue-real-date.blade.php
+END
+project-type-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/204/project-master/trunk/resources/views/backend/project-type-edit.blade.php
+END
+node-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/280/project-master/trunk/resources/views/backend/node-list.blade.php
+END

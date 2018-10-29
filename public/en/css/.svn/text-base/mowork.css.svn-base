@@ -1,0 +1,359 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+body {
+  /*padding-bottom: 40px;*/
+  /*color: #5a5a5a;*/
+  font-family: "PingFang SC";
+}
+
+.content{
+  width: 1200px;
+  margin: 0 auto;
+}
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+/* Flip around the padding for proper display in narrow viewports */
+.navbar-wrapper > .container {
+  padding-right: 0;
+  padding-left: 0;
+}
+.navbar-wrapper .navbar {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.navbar-wrapper .navbar .container {
+  width: 1200px;
+}
+.navbar-wrapper .navbar-nav{
+  float: right;
+}
+
+.navbar-brand {
+  height: 100px;
+  padding: 25px 15px;
+}
+.navbar-nav>li{
+  float: left;
+}
+.navbar-nav>li>a{
+  line-height: 70px;
+  font-size: 18px;
+  color: #000;
+}
+
+/* entire container, keeps perspective */
+.flip-container {
+  perspective: 1000;
+  position: relative;
+}
+/* flip the pane when hovered */
+.flip-container:hover .flipper, .flip-container.hover .flipper {
+  transform: rotateY(180deg);
+}
+
+/* flip speed goes here */
+.flipper {
+  transition: 0.6s;
+  -webkit-transition: .6s;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 2;
+}
+
+/* back, initially hidden pane */
+.back {
+  transform: rotateY(180deg);
+}
+
+
+
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+.carousel {
+  /*height: 700px;*/
+  /*margin-bottom: 60px;*/
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+.carousel .item {
+  /*height: 700px;*/
+  /*background-color: #777;*/
+}
+
+/*
+  mobile
+*/
+
+.mobile{
+  width: 80%;
+  margin: 100px auto;
+  height: 500px;
+}
+
+
+ul.phones{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 60px;
+  left: 15px;
+}
+ul.phones li{
+  list-style: none;
+  float: left;
+  margin: 0;
+  display: none;
+}
+ul.phones li.active{
+  display: block;
+}
+
+
+
+
+
+
+.desc{
+  width: 60%;
+  float: right;
+  height: 100%;
+}
+.desc h1{
+  font-weight: bold;
+  font-size: 40px;
+  line-height: 60px;
+}
+.desc p{
+  font-size: 20px;
+  color: #416eb6;
+  line-height: 46px;
+}
+
+
+.management{
+  height: 922px;
+  background: url("../images/management.png") top;
+
+}
+.management h1{
+  text-align: center;font-weight: bold;font-size: 40px;padding-top: 120px
+}
+
+
+.customer{
+  height: 800px;
+  background: url("../images/customer-bg.png") top;
+}
+.customer h1{
+  margin: 0;
+  font-size: 40px;
+  line-height: 60px;
+  padding-top: 50px;
+  width: 500px;
+  color: #416eb6;
+  font-family: "PingFang SC";
+}
+.customer ul{
+  float: right;
+  height: 510px;
+  padding: 0;
+  width: 90%;
+  margin-right: -60px;
+}
+.customer ul li{
+  width: 170px;
+  height: 170px;
+  /*flex: 0 0 16%;*/
+  /*background-color: black;*/
+  float: left;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+
+
+.apqp h1{
+  text-align: center;font-weight: bold;font-size: 40px;padding-top: 100px;width: 80%;margin: 0 auto;
+  line-height: 60px;
+}
+.apqp ul{
+  padding: 0;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  display: flex;
+  justify-content:space-between;
+}
+.apqp ul li{
+  list-style: none;
+  text-align: center;
+  position: relative;
+  transition: transform .5s;
+  -webkit-transition: -webkit-transform .5s;
+}
+
+.apqp ul li:hover{
+  box-shadow: 10px 10px 15px rgba(65,110,152,0.3);
+  -webkit-box-shadow: 10px 10px 15px rgba(65,110,152,0.3);
+  transform: translate3d(0,-10px,0);
+  -webkit-transform: translate3d(0,-10px,0);
+}
+
+.apqp ul li p{
+  position: absolute;
+  font-size: 16px;
+  width: 80%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  bottom: 30px;
+  text-align: center;
+  color: #282828;
+}
+
+
+
+.ad{
+  height: 300px;
+  background: url("../images/banner-ad.png") top;
+}
+
+
+.collaborative{
+  height: 906px;
+}
+
+.collaborative .img-content{
+  margin-top: 80px;
+  height: 500px;
+  position: relative;
+}
+
+
+.img-left{
+  left: 50px;position: absolute;width: 50%;
+  transition: left .6s;
+  -webkit-transition: left .6s;
+}
+.img-right{
+  width: 50%;position: absolute;right: 0;
+  transition: right .6s;
+  -webkit-transition: right .6s;
+}
+
+.img-content:hover .img-left{
+  left: 160px;
+}
+.img-content:hover .img-right{
+  right: 90px;
+}
+
+
+.collaborative h1{
+  text-align: center;font-weight: bold;font-size: 40px;padding-top: 100px
+}
+
+
+.big-data{
+  height: 1206px;
+  background: url("../images/big-data/bg.png") top;
+}
+.big-data h1{
+  text-align: center;font-weight: bold;font-size: 40px;padding-top: 100px;color: white;
+}
+.map-data{
+  width: 100%;
+  height: 60%;
+  display: none;
+}
+.map-data.active{
+  display: block;
+}
+.big-data .btns{
+  width: 100%;color: white;font-size: 20px
+}
+.big-data .btns ul{
+  width: 1000px;margin: 30px auto;
+}
+.big-data .btns ul li{
+  width: 240px;height: 60px;list-style: none;display: inline-block;line-height: 60px;margin-left: 70px;text-align: center;border-radius: 10px;cursor: pointer;
+}
+
+.imgs .people{
+  float: left;
+  margin-top: 53%
+}
+
+.imgs .devices{
+  float: right;
+  margin-top: 40%;
+  margin-right: 1%;
+}
+
+.imgs .projects{
+  float: right;
+  margin-right:16%;
+  margin-top: -3%;
+}
+
+.service h1{
+  text-align: center;font-weight: bold;font-size: 40px;padding-top: 140px
+}
+.service ul{
+  padding: 0;
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  display: flex;
+  justify-content:space-between;
+}
+
+.service ul li{
+  list-style: none;
+  flex: 1;
+  text-align: center;
+  transition: transform .5s;
+  -webkit-transition: -webkit-transform .5s;
+}
+.service ul li:hover{
+  transform: translate3d(0,-10px,0);
+  -webkit-transform: translate3d(0,-10px,0);
+}
+.service ul li p{
+  font-size: 16px;
+  font-weight: bold;
+  color: #282828;
+}
+.service ul li p:first-child{
+  padding-top: 30px;
+}
+
+
+

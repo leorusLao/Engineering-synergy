@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/old_version
+END
+wechat.js
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/old_version/wechat.js
+END
+wechatauth.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/old_version/wechatauth.class.php
+END
+wechatpay.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/old_version/wechatpay.class.php
+END
+snoopy.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/old_version/snoopy.class.php
+END
+wechatext.class.php
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/wechat/wechat-php-sdk-master/old_version/wechatext.class.php
+END

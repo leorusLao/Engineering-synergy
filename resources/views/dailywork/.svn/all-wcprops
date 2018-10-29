@@ -1,0 +1,377 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/mw2030/!svn/ver/283/project-master/trunk/resources/views/dailywork
+END
+openissue-input.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/20/project-master/trunk/resources/views/dailywork/openissue-input.blade.php
+END
+plan-task-progress-input.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-progress-input.blade.php
+END
+openissue-approve.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/mw2030/!svn/ver/120/project-master/trunk/resources/views/dailywork/openissue-approve.blade.php
+END
+task-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/task-edit.blade.php
+END
+accept-project.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/accept-project.blade.php
+END
+progress-feed-in.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/57/project-master/trunk/resources/views/dailywork/progress-feed-in.blade.php
+END
+accept-project.o.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/accept-project.o.blade.php
+END
+edit-project.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/279/project-master/trunk/resources/views/dailywork/edit-project.blade.php
+END
+setup-projectNew.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/mw2030/!svn/ver/106/project-master/trunk/resources/views/dailywork/setup-projectNew.blade.php
+END
+approve-project.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/approve-project.blade.php
+END
+project-view.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/project-view.blade.php
+END
+plan-task-confirm.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-confirm.blade.php
+END
+folder-tree.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/folder-tree.blade.php
+END
+my-openissue-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/my-openissue-list.blade.php
+END
+plan-approval-stamp.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-approval-stamp.blade.php
+END
+project-plan.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/57/project-master/trunk/resources/views/dailywork/project-plan.blade.php
+END
+my-openissue-dealyed-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/my-openissue-dealyed-list.blade.php
+END
+folder-tree.blade.o.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/folder-tree.blade.o.php
+END
+plan-approval-stamp.o.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-approval-stamp.o.blade.php
+END
+my-openissue-progress-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/my-openissue-progress-list.blade.php
+END
+list-openissue.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/120/project-master/trunk/resources/views/dailywork/list-openissue.blade.php
+END
+view-plan-chart.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/view-plan-chart.blade.php
+END
+openissue-edit-plan.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/openissue-edit-plan.php
+END
+my-openissue-view.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/my-openissue-view.blade.php
+END
+app-view-plan.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/app-view-plan.blade.php
+END
+node-instruction-document.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/node-instruction-document.blade.php
+END
+plan-node-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/57/project-master/trunk/resources/views/dailywork/plan-node-list.blade.php
+END
+plan-approval.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/120/project-master/trunk/resources/views/dailywork/plan-approval.blade.php
+END
+make-plan.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/265/project-master/trunk/resources/views/dailywork/make-plan.blade.php
+END
+my-openissue-progress-input.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/my-openissue-progress-input.blade.php
+END
+list-project.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/248/project-master/trunk/resources/views/dailywork/list-project.blade.php
+END
+openissue-progress.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/openissue-progress.blade.php
+END
+my-department-task-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/my-department-task-list.blade.php
+END
+distribute-project.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/distribute-project.blade.php
+END
+department-make-plan.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/department-make-plan.blade.php
+END
+plan-template-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/mw2030/!svn/ver/120/project-master/trunk/resources/views/dailywork/plan-template-list.blade.php
+END
+plan-task-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-edit.blade.php
+END
+plan-task-confirm-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/mw2030/!svn/ver/66/project-master/trunk/resources/views/dailywork/plan-task-confirm-list.blade.php
+END
+openissue-cont.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/openissue-cont.blade.php
+END
+view-task-bar.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/view-task-bar.blade.php
+END
+file-management.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/266/project-master/trunk/resources/views/dailywork/file-management.blade.php
+END
+plan-task-detail.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-detail.blade.php
+END
+workboard.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/workboard.blade.php
+END
+project-file-maintenance.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/mw2030/!svn/ver/266/project-master/trunk/resources/views/dailywork/project-file-maintenance.blade.php
+END
+openissue-approval-stamp.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/mw2030/!svn/ver/120/project-master/trunk/resources/views/dailywork/openissue-approval-stamp.blade.php
+END
+setup-projectNew1.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/mw2030/!svn/ver/207/project-master/trunk/resources/views/dailywork/setup-projectNew1.blade.php
+END
+openissue-show.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/openissue-show.blade.php
+END
+make-plan-new.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/make-plan-new.blade.php
+END
+plan-task-progress-input-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-progress-input-list.blade.php
+END
+plan-template-make.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/mw2030/!svn/ver/142/project-master/trunk/resources/views/dailywork/plan-template-make.blade.php
+END
+folder-child.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/folder-child.blade.php
+END
+template-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/template-edit.blade.php
+END
+cont-project.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/cont-project.blade.php
+END
+task-template.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/task-template.blade.php
+END
+plan-task-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-list.blade.php
+END
+file-maintenance.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/mw2030/!svn/ver/20/project-master/trunk/resources/views/dailywork/file-maintenance.blade.php
+END
+file-maintenance.o.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/file-maintenance.o.blade.php
+END
+plan-task-dealyed-list.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-dealyed-list.blade.php
+END
+department-plan.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/department-plan.blade.php
+END
+openissue-edit.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/openissue-edit.blade.php
+END
+setup-project.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/mw2030/!svn/ver/283/project-master/trunk/resources/views/dailywork/setup-project.blade.php
+END
+plan-task-view.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/dailywork/plan-task-view.blade.php
+END

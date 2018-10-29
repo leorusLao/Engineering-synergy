@@ -1,0 +1,475 @@
+<?php
+
+namespace App\Http\Controllers;
+use App;
+use Auth;
+use Session;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\Response;
+use App\Models\Company;
+use App\Models\CompanyConfig;
+use App\Models\WorkCalendarReal;
+use App\Models\Department;
+use App\Models\UserRoleConfig;
+use App\Models\Node;
+use App\Models\NodeCompany;
+use App\Models\Position;
+use App\Models\WorkCalendarBase;
+use App\Models\ProjectType;
+use App\Models\PartType;
+use App\Models\PlanType;
+use App\Models\NodeType;
+
+class InitController extends  Controller {
+	protected $locale;
+
+	public function __construct()
+	{
+		session_start();
+		if(Session::has('locale')){
+			$this->locale = Session::get('locale');
+		}
+		else if(isset($_COOKIE['locale'])){
+			$this->locale = $_COOKIE['locale'];
+		}
+		else{
+			$this->locale = config('app.locale');
+		}
+
+	}
+	
+	public static function getAndInitProjectCoding() 
+	{//获取项目编号
+		if(!Session::has('userId')) return ;
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+		
+		//check project coding setting
+		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'))->first();
+		$yy = date('y');
+		$mm = date('m');
+		if($row) {
+			if($yy != $row->current_year) {//entered a new year; renewl projectCoding setting;then get it again
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'))->
+				update(array('current_value' => 1, 'current_year' => $yy));
+				$row = CompanyConfig::where(array('company_id' => $company_id, 'projectCoding'))->first();
+			} else {//still in the same calendar
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'));
+			}
+		} else {//do initialization
+			CompanyConfig::create(array('cfg_name' => 'projectCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+			'company_id' => $company_id));
+			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'))->first();
+		}
+		
+		$val = sprintf('%04d',$row->current_value);
+		$basinfo = Company::where('company_id',$company_id)->join('company_industry','company_industry.industry_id','=','company.industry')->
+		join('company_type','company_type.type_id','=','company.company_type')->first();
+		if($basinfo) {
+			$append = $basinfo->industry_code.$basinfo->type_code;//append insdutry code and company type code 
+		} else {
+			$append =  '0000';
+		}
+		$res = array('proj_code' => 'X'.$yy.$mm.$val, 'proj_unicode' => 'X'.$append.$yy.$mm.$val);
+		return json_encode($res);
+	}
+	
+	public static function getAndInitProductPlanCoding()
+	{//产品开发计划编号
+		if(!Session::has('userId')) return ;
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+	
+		//check project coding setting
+		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'productPlanCoding'))->first();
+		$yy = date('y');
+		$mm = date('m');
+		if($row) {
+			if($yy != $row->current_year) {//entered a new year; renew productPlanCoding setting;then get it again
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'productPlanCoding'))->
+				update(array('current_value' => 1, 'current_year' => $yy));
+				$row = CompanyConfig::where(array('company_id' => $company_id, 'productPlanCoding'))->first();
+			} else {//still in the same calendar
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'productPlanCoding'))->increment('current_value',1);
+			}
+		} else {//do initialization
+			CompanyConfig::create(array('cfg_name' => 'productPlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+					'company_id' => $company_id));
+			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'productPlanCoding'))->first();
+		}
+	
+		$val = sprintf('%04d',$row->current_value);
+		$basinfo = Company::where('company_id',$company_id)->join('company_industry','company_industry.industry_id','=','company.industry')->
+		join('company_type','company_type.type_id','=','company.company_type')->first();
+		if($basinfo) {
+			$append = $basinfo->industry_code.$basinfo->type_code;//append insdutry code and company type code
+		} else {
+			$append =  '0000';
+		}
+ 	
+		$res = array('plan_code' => 'P'.$yy.$mm.$val, 'plan_unicode' => 'P'.$append.$yy.$mm.$val);
+		return json_encode($res);
+	}
+	
+	public static function getAndInitMoldPlanCoding()
+	{//模具开发计划编号
+		if(!Session::has('userId')) return ;
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+	
+		//check project coding setting
+		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'moldPlanCoding'))->first();
+		$yy = date('y');
+		$mm = date('m');
+		if($row) {
+			if($yy != $row->current_year) {//entered a new year; renew moldPlanCoding setting;then get it again
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'moldPlanCoding'))->
+				update(array('current_value' => 1, 'current_year' => $yy));
+				$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'moldPlanCoding'))->first();
+			} else {//still in the same calendar
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'moldPlanCoding'))->increment('current_value',1);
+			}
+		} else {//do initialization
+			CompanyConfig::create(array('cfg_name' => 'moldPlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+					'company_id' => $company_id));
+			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'moldPlanCoding'))->first();
+		}
+	
+		$val = sprintf('%04d',$row->current_value);
+		$basinfo = Company::where('company_id',$company_id)->join('company_industry','company_industry.industry_id','=','company.industry')->
+		join('company_type','company_type.type_id','=','company.company_type')->first();
+		if($basinfo) {
+			$append = $basinfo->industry_code.$basinfo->type_code;//append insdutry code and company type code
+		} else {
+			$append =  '0000';
+		}
+			
+	 	$res = array('plan_code' => 'M'.$yy.$mm.$val, 'plan_unicode' => 'M'.$append.$yy.$mm.$val);
+	 	return json_encode($res);
+	}
+	
+   public static function getAndInitJigPlanCoding()
+   {//夹具开发计划编号
+	  if(!Session::has('userId')) return ;
+	  $company_id = Session::get('USERINFO')->companyId;
+	  $uid = Session::get('USERINFO')->userId;
+	
+	  //check jig coding setting
+	  $row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'jigPlanCoding'))->first();
+	  $yy = date('y');
+	  $mm = date('m');
+	  if($row) {
+		if($yy != $row->current_year) {//entered a new year; renew jigPlanCoding setting;then get it again
+			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'jigPlanCoding'))->
+			update(array('current_value' => 1, 'current_year' => $yy));
+			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'jigPlanCoding'))->first();
+		} else {//still in the same calendar
+			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'jigPlanCoding'))->increment('current_value',1);
+		}
+	  } else {//do initialization
+		CompanyConfig::create(array('cfg_name' => 'jigPlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'jigPlanCoding'))->first();
+ 	  }
+	
+	  $val = sprintf('%04d',$row->current_value);
+	  $basinfo = Company::where('company_id',$company_id)->join('company_industry','company_industry.industry_id','=','company.industry')->
+	  join('company_type','company_type.type_id','=','company.company_type')->first();
+	  if($basinfo) {
+		  $append = $basinfo->industry_code.$basinfo->type_code;//append insdutry code and company type code
+	  } else {
+		  $append =  '0000';
+	  }
+	  $res = array('plan_code' => 'J'.$yy.$mm.$val, 'plan_unicode' => 'J'.$append.$yy.$mm.$val);
+	  return json_encode($res);
+	}
+
+	public static function getAndInitGaugePlanCoding()
+	{//检具开发计划编号
+	if(!Session::has('userId')) return ;
+	$company_id = Session::get('USERINFO')->companyId;
+	$uid = Session::get('USERINFO')->userId;
+	
+	//check project coding setting
+	$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'gaugePlanCoding'))->first();
+	$yy = date('y');
+	$mm = date('m');
+	if($row) {
+		if($yy != $row->current_year) {//entered a new year; renew moldPlanCoding setting;then get it again
+			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'gaugePlanCoding'))->
+			update(array('current_value' => 1, 'current_year' => $yy));
+			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'gaugePlanCoding'))->first();
+		} else {//still in the same calendar
+			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'gaugePlanCoding'))->increment('current_value',1);
+		}
+	} else {//do initialization
+		CompanyConfig::create(array('cfg_name' => 'gaugePlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'gaugePlanCoding'))->first();
+	}
+	
+	$val = sprintf('%04d',$row->current_value);
+	$basinfo = Company::where('company_id',$company_id)->join('company_industry','company_industry.industry_id','=','company.industry')->
+	join('company_type','company_type.type_id','=','company.company_type')->first();
+	if($basinfo) {
+		$append = $basinfo->industry_code.$basinfo->type_code;//append insdutry code and company type code
+	} else {
+		$append =  '0000';
+	}
+	 
+	 $res = array('plan_code' => 'G'.$yy.$mm.$val, 'plan_unicode' => 'G'.$append.$yy.$mm.$val);
+	 return json_encode($res);
+   }
+	
+	public static function getAndInitAutomationPlanCoding()
+	{//自动化线开发计划编号
+	if(!Session::has('userId')) return ;
+	$company_id = Session::get('USERINFO')->companyId;
+	$uid = Session::get('USERINFO')->userId;
+	
+	//check project coding setting
+	$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'automationPlanCoding'))->first();
+	$yy = date('y');
+	$mm = date('m');
+	if($row) {
+		if($yy != $row->current_year) {//entered a new year; renew moldPlanCoding setting;then get it again
+			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'automationPlanCoding'))->
+			update(array('current_value' => 1, 'current_year' => $yy));
+			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'automationPlanCoding'))->first();
+		} else {//still in the same calendar
+			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'automationPlanCoding'))->increment('current_value',1);
+		}
+	} else {//do initialization
+		CompanyConfig::create(array('cfg_name' => 'productPlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'automationPlanCoding'))->first();
+	}
+	
+	$val = sprintf('%04d',$row->current_value);
+	$basinfo = Company::where('company_id',$company_id)->join('company_industry','company_industry.industry_id','=','company.industry')->
+	join('company_type','company_type.type_id','=','company.company_type')->first();
+	if($basinfo) {
+		$append = $basinfo->industry_code.$basinfo->type_code;//append insdutry code and company type code
+	} else {
+		$append =  '0000';
+	}
+	
+	
+	  $res = array('plan_code' => 'A'.$yy.$mm.$val, 'plan_unicode' => 'A'.$append.$yy.$mm.$val);
+ 	  return json_encode($res);  
+   }
+   
+   public static function getAndInitPartCoding()
+   {//获取零件编号
+   	if(!Session::has('userId')) return ;
+   	$company_id = Session::get('USERINFO')->companyId;
+   	$uid = Session::get('USERINFO')->userId;
+   	
+   	//check part coding setting
+   	$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'partCoding'))->first();
+   	$yy = date('y');
+   	$mm = date('m');
+   	if($row) {
+   		if($yy != $row->current_year) {//entered a new year; renew moldPlanCoding setting;then get it again
+   			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'partCoding'))->
+   			update(array('current_value' => 1, 'current_year' => $yy));
+   			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'partCoding'))->first();
+   		} else {//still in the same calendar
+   			CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'partCoding'))->increment('current_value',1);
+   		}
+   	} else {//do initialization
+   		CompanyConfig::create(array('cfg_name' => 'partCoding','current_value' => 1,'current_year' => $yy,'length' => 6,
+   				'company_id' => $company_id));
+   		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'partCoding'))->first();
+   	}
+   	
+   	$val = sprintf('%06d',$row->current_value);
+   	 
+   	$res = array('part_code' => 'C'.$yy.$mm.$val);
+   	return json_encode($res);
+   }
+   
+   public static function isYearCalendarExisted ($year) 
+   {
+   	   if(!Session::has('userId')) return ;
+   	   $company_id = Session::get('USERINFO')->companyId;
+   	   $uid = Session::get('USERINFO')->userId;
+   	   
+   	   $row = WorkCalendarReal::where(array('cal_year' => $year, 'company_id' => $company_id))->first();
+   	   if($row) {
+   	   	  return true;
+   	   }
+   	   
+   	   return false;
+   }
+
+	public static function getAndInitProjectCodingApi($company_id) 
+	{//获取项目编号
+		
+		//check project coding setting
+		$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'))->first();
+		$yy = date('y');
+		$mm = date('m');
+		if($row) {
+			if($yy != $row->current_year) {//entered a new year; renewl projectCoding setting;then get it again
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'))->
+				update(array('current_value' => 1, 'current_year' => $yy));
+				$row = CompanyConfig::where(array('company_id' => $company_id, 'projectCoding'))->first();
+			} else {//still in the same calendar
+				CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'))->increment('current_value',1);
+			}
+		} else {//do initialization
+			CompanyConfig::create(array('cfg_name' => 'projectCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+			'company_id' => $company_id));
+			$row = CompanyConfig::where(array('company_id' => $company_id, 'cfg_name' => 'projectCoding'))->first();
+		}
+		
+		$val = sprintf('%04d',$row->current_value);
+		$basinfo = Company::where('company_id',$company_id)->join('company_industry','company_industry.industry_id','=','company.industry')->
+		join('company_type','company_type.type_id','=','company.company_type')->first();
+		if($basinfo) {
+			$append = $basinfo->industry_code.$basinfo->type_code;//append insdutry code and company type code 
+		} else {
+			$append =  '0000';
+		}
+	 	
+		$res = array('proj_code' => 'X'.$yy.$mm.$val, 'proj_unicode' => 'X'.$append.$yy.$mm.$val);
+		return $res;
+	}
+	
+	public static function companyInit($company_id)
+	{//创建公司时:初始化项目编号，零件编码，产品开发计划编号，模具开发计划编号,夹具开发计划编号，检具开发计划编号,以及设置公司缺省部门
+		$yy = date('y');
+		$mm = date('m');
+		CompanyConfig::where('company_id', $company_id)->delete();//if exists then delete
+		CompanyConfig::create(array('cfg_name' => 'projectCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		CompanyConfig::create(array('cfg_name' => 'partCoding','current_value' => 1,'current_year' => $yy,'length' => 6,
+				'company_id' => $company_id));
+		CompanyConfig::create(array('cfg_name' => 'productPlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		CompanyConfig::create(array('cfg_name' => 'moldPlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		CompanyConfig::create(array('cfg_name' => 'jigPlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		CompanyConfig::create(array('cfg_name' => 'gaugePlanCoding','current_value' => 1,'current_year' => $yy,'length' => 4,
+				'company_id' => $company_id));
+		
+		Department::where('company_id', $company_id)->delete();//if exists then delete
+		$deps = Department::where('company_id',0)->get();
+		
+		foreach ($deps as $row) {
+			Department::create(array('dep_code' => $row->dep_code, 'name' => $row->name, 'name_en' => $row->name_en, 
+					'upper_id' => 0, 'cal_id' => 0, 'comment' => $row->comment, 'manager' => 0, 'company_id' => $company_id,
+					'status' => 1
+			));
+		}
+	    //职位编号
+		$positions = Position::where('company_id',0)->get();
+		foreach ($positions as $row) {
+			Position::create(array('position_title' => $row->position_title, 'alias' => $row->alais,
+					'position_title_en' => $row->position_title_en,  'company_id' => $company_id
+			));
+		}
+		
+		//复制平台节点
+		self::copyPlatformNodes($company_id);
+		
+		//初始化公司日历
+		self::initCalendar($company_id, date('Y'));
+		
+		//初始化公司的项目类型，来自平台
+		self::initProjectType($company_id);
+		
+		//初始化公司的零件类型，来自平台
+		self::initPartType($company_id);
+		
+		//初始化公司的计划类型，来自平台
+		self::initPlanType($company_id);
+		
+		//初始化公司的节点类型，来自平台
+		self::initNodeType($company_id);
+		
+		//TODO 根据公司的BU设定的项目类型，零件类型，计划类型，节点类型；初始化公司的项目类型，零件类型，计划类型，节点类型
+	}
+	
+	public static function copyPlatformNodes($company_id)
+	{
+		$nodes = Node::where(array('company_id' => 0, 'category' => '01'))->orderBy('node_id','asc')->get();
+		foreach ($nodes as $row) {
+			NodeCompany::create(array('node_id' => $row->node_id, 'node_no' => $row->node_no, 'type_id' => $row->type_id, 
+					'name' => $row->name, 'name_en' => $row->name_en, 'level' => $row->level, 'leader' => 0, 
+				    'expandable' => $row->expandable, 'company_id' => $company_id));
+		}
+	}
+ 
+	public static function initCalendar($company_id, $year)
+	{
+			
+		for($month = 1; $month < 13; $month++) {
+			$days = WorkCalendarBase::where(array('cal_year' => $year, 'cal_month' => $month))->get();
+			$workdays = '';
+			foreach($days as $day ) {
+				$workdays .= $day->is_weekday.',';
+			}
+			$workdays = rtrim($workdays,',');
+			if($month == 1) {
+			    WorkCalendarReal::addCompanyYear($year, $month, $workdays, 1, Lang::get('mowork.default_calendar'),$company_id);
+			} else {
+			    WorkCalendarReal::updateCompanyYearInitial($year, $month, $workdays, 1, Lang::get('mowork.default_calendar'),$company_id);
+			}
+		}	
+	}
+	
+	public static function initProjectType($company_id)
+	{
+		$rows = ProjectType::where(array('company_id' => 0, 'bu_id' => 0))->get();
+		foreach ($rows as $row) {
+			ProjectType::addProjectType($row->name, $row->name_en, $company_id);
+		}
+	}
+	
+	public static function initPartType($company_id)
+	{
+		$rows = PartType::where(array('company_id' => 0, 'bu_id' => 0))->get();
+		foreach ($rows as $row) {
+			PartType::addPartType($row->type_code, $row->name, $row->name_en,$company_id);
+		}
+	}
+	
+	public static function initPlanType($company_id)
+	{
+		$rows = PlanType::where(array('company_id' => 0, 'bu_id' => 0))->get();
+		foreach ($rows as $row) {
+			PlanType::addPlanType($row->type_code, $row->type_name, $row->type_name_en,$company_id);
+		}
+	}
+	
+	public static function initNodeType($company_id)
+	{
+		$rows = NodeType::where(array('company_id' => 0, 'bu_id' => 0))->get();
+		foreach ($rows as $row) {
+			NodeType::addNodeType($row->type_name, $row->type_name_en, $row->ctrl_by_dep, $row->fore_color,
+					$row->back_color, $company_id);
+		}
+	}
+	
+	public static function copyBuNodes($company_id)
+	{
+	
+	} 
+	
+	public static function userRoleSelfDefineStarter($company_id)
+	{
+		$existed = UserRoleConfig::where('company_id',$company_id)->first();
+		if(!$existed) {
+			UserRoleConfig::create(array('start_role_id' => 101, 'current_role_id' => 101, 'company_id' => $company_id));
+		}
+	}
+
+}

@@ -1,0 +1,127 @@
+<?php
+
+function isValidatedMobileFormat($validatingNumber)
+{
+	if(preg_match('/^1[345678]{1}\d{9}$/',$validatingNumber)){
+		return  true;
+	}else{ 
+		return false;
+	}
+}
+
+function isExistedMobilePhone($phone)
+{
+	if( !is_null(User::where('mobile', $email)->first()) ){
+		return true;
+	}
+	return false;
+}
+
+function signupWithMobilePhone($phone,$password)																		
+{
+	$success = true;
+	try {
+		$id = User::create(array('email' => $email,'password' => Hash::make($password)))->id;
+		User::where('id',$id)->update(array('uid' => $id));
+	} catch (Exception $e) {
+		$success = false;
+	}
+
+	return $success;
+}
+
+function signupWithEmail($email,$password)
+{
+	 
+	try {
+		$id = User::create(array('email' => $email,'password' => Hash::make($password)))->id;
+		User::where('id',$id)->update(array('uid' => $id));
+		$success = true;
+	} catch (Exception $e) {
+		$success = false;
+	}
+
+	return $success;
+}
+
+function isValidatedEmailFormat($email)
+{
+	$rules = array(
+		'email' => 'required|email'
+	);
+
+	$validator = Validator::make(array('email' => $email), $rules);
+	if($validator->fails()) {
+		return false;
+	}
+
+	return true;
+}
+
+function isExistedEmail($email)
+{
+	if( !is_null() ){
+		return true;
+	}
+	return false;
+}
+
+function sanitizePhoneNumber($phone){
+	return preg_replace("/[^0-9]/","",$phone);
+}
+
+function isPasswordLongEnough($password,$minLength){
+	return strlen($password) >= $minLength? true: false ;
+}
+
+function randString($length = 10) {
+	$characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+	$charactersLength = strlen($characters);
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++) {
+		$randomString .= $characters[rand(0, $charactersLength - 1)];
+	}
+	return $randomString;
+}
+
+function encode_id($str = '') {
+    $arr = array(0=>'-d',1=>'-e',2=>'-g',3=>'-f',4=>'-z',5=>'-s',6=>'-x',7=>'-t',8=>'-y',9=>'-m');
+    $old  = base64_encode($str); //先加密
+    $new = strtr($old, $arr); //后替换，形成自己的东西
+    return $new;
+}
+
+
+function decode_id($str = '') {
+    $arr = array('-d'=>0,'-e'=>1,'-g'=>2,'-f'=>3,'-z'=>4,'-s'=>5,'-x'=>6,'-t'=>7,'-y'=>8,'-m'=>9);
+    $str = strtr($str, $arr); //先替换，回到原来加密的东西
+    return base64_decode($str); // 后解码
+}
+
+function byteTransGMKB($size,$digits=2){ 
+  $unit= array('','K','M','G','T','P');
+  $base= 1024;
+  $i   = floor(log($size,$base));
+  $n   = count($unit);
+  if($i >= $n){
+          $i=$n-1;
+        }
+        return round($size/pow($base,$i),$digits).' '.$unit[$i] . 'B';
+}
+
+// 二维数组 某一个键对应的值  全部替换
+function getData($data, $array){
+	foreach($data as $key => $value){
+		$tmpKey = array_keys($value);
+		foreach($array as $k => $v){
+			if(in_array($k, $tmpKey)){
+				$data[$key][$k] = $v[$value[$k]];
+			}
+		}
+	}
+
+	return $data;
+}
+
+
+

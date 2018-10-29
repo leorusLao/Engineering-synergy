@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/mw2030/!svn/ver/204/project-master/trunk/resources/views/frontend
+END
+select-company.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/8/project-master/trunk/resources/views/frontend/select-company.blade.php
+END
+setpassword.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/setpassword.blade.php
+END
+signup-success.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/signup-success.blade.php
+END
+about-us.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/about-us.blade.php
+END
+homepage.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/homepage.blade.php
+END
+share-follow.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/share-follow.blade.php
+END
+band-to-wechat.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/band-to-wechat.blade.php
+END
+lost-password.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/lost-password.blade.php
+END
+signup.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/mw2030/!svn/ver/204/project-master/trunk/resources/views/frontend/signup.blade.php
+END
+reset-password.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/reset-password.blade.php
+END
+login.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/frontend/login.blade.php
+END

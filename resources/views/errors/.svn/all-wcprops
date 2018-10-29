@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/errors
+END
+404.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/errors/404.blade.php
+END
+503.blade.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/mw2030/!svn/ver/1/project-master/trunk/resources/views/errors/503.blade.php
+END

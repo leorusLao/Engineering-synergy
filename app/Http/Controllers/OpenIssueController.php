@@ -1,0 +1,483 @@
+<?php
+
+namespace App\Http\Controllers;
+use App;
+
+use Session;
+use DB;
+use Validator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Http\Response;
+use App\Models\Plan;
+use App\Models\PlanTask;
+use App\Models\PlanTaskLink;
+use App\Models\PlanType;
+use App\Models\Project;
+use App\Models\ProjectDetail;
+use App\Models\OpenIssue;
+use App\Models\OpenIssueDetail;
+use App\Models\IssueSource;
+use App\Models\IssueClass;
+use App\Models\User;
+use App\Events\OpenissueApproved;
+use App\Events\PlanApproved;
+use App\Models\Department;
+
+class OpenIssueController extends Controller {
+    protected $locale;
+
+    public function __construct()
+    {
+        session_start();
+        if(Session::has('locale')){
+            $this->locale = Session::get('locale');
+        }
+        else if(isset($_COOKIE['locale'])){
+            $this->locale = $_COOKIE['locale'];
+        }
+        else{
+            $this->locale = config('app.locale');
+        }
+        session_cache_limiter(false); //let page no expiration after post data
+    }
+
+
+    //OPEN ISSUE录入列表
+    public function openissueInputList(Request $request)
+    {
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+        $uid = Session::get('USERINFO')->userId;
+
+        $sources = IssueSource::whereRaw('company_id = 0 OR company_id ='.$companyid)->get();
+        
+        if(!empty($sources)){ 
+            $result['sourceid'] = $sources[0]->id;
+        }else{
+            $result['sourceid'] = 0;
+        }
+       
+        $salt = $companyid.$this->salt.$uid; 
+        
+        $result['resource'] = IssueSource::infoIssueSourceTotal(array('id'=>$result['sourceid']),'code')->code;
+        
+        if($result['resource'] == 'Plan'){  
+            //plan类型issue
+            $result_cont = Plan::listPlanIssue($companyid,$result['sourceid']);
+        }else if($result['resource'] == 'Project'){ 
+            //project类型issue
+            $result_cont = Project::listProjectIssue($companyid,$result['sourceid']);
+        }else{ 
+            //其他类型issue
+            $result_cont = IssueSource::listIssueOther($companyid,$result['sourceid']);
+        }
+       
+        $result['cont'] = $result_cont;
+
+        $result['class_source'] = IssueSource::listIssueThree($companyid);//source来源
+
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_input');
+        return view('dailywork.openissue-input',array('cookieTrail' => $cookieTrail,'sources' => $sources,
+        		'salt' => $salt,'result' => $result, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    }
+
+
+    //OPEN ISSUE录入列表
+    public function openissueInput(Request $request, $token,$sourceid)
+    {
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+        $uid = Session::get('USERINFO')->userId;
+
+        $result['sourceid'] = $sourceid;
+        if(empty($result['sourceid'])){ 
+            $info_issuesource = IssueSource::infoIssueSource(['company_id'=>$companyid]);
+            if(!empty($info_issuesource)){ 
+                $result['sourceid'] = $info_issuesource->id;
+            }else{
+                $result['sourceid'] = 0;
+            }
+        }
+
+        $salt = $companyid.$this->salt.$uid; 
+        $next_issue_id = '';
+        $result['resource'] = IssueSource::infoIssueSource(array('id'=>$result['sourceid']),'code')->code;
+        if($result['resource'] == 'Plan'){  
+        	//plan类型issue
+        	$result_cont = Plan::listPlanIssue($companyid,$result['sourceid']);
+        }else if($result['resource'] == 'Project'){ 
+        	//project类型issue
+        	$result_cont = Project::listProjectIssue($companyid,$result['sourceid']);
+        }else{ 
+        	//其他类型issue,签发下一个issue_id
+        	$result_cont = IssueSource::listIssueOther($companyid,$result['sourceid']);
+        	$next_issue_id = OpenIssueDetail::where(array('company_id' => $companyid, 'source_id' =>$result['sourceid']))
+        	->max('issue_id') + 1;
+        }
+        $result['cont'] = $result_cont;
+        //dd($result_cont);
+
+        //source来源
+        $sources = IssueSource::whereRaw('company_id = 0 OR company_id ='.$companyid)->get();
+        
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_input');
+        return view('dailywork.openissue-input',array('cookieTrail' => $cookieTrail, 'sources' => $sources,
+        	'next_issue_id' => $next_issue_id, 'salt' => $salt,'result' => $result, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    }
+
+    
+    //OPEN ISSUE审批列表
+    public function openissueApproval(Request $request,Response $response)
+    {
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+        $uid = Session::get('USERINFO')->userId;
+        
+        $salt = $companyid.$this->salt.$uid;
+        $result = OpenIssueDetail:: listIssueToBeApproved($companyid);
+       
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_approval');
+        return view('dailywork.openissue-approve',array('cookieTrail' => $cookieTrail, 'salt' => $salt, 'result' => $result, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    }
+
+    
+    //OPEN ISSUE列表
+    public function openissueList(Request $request,Response $response)
+    {
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+        $uid = Session::get('USERINFO')->userId;
+
+        $salt = $companyid.$this->salt.$uid; 
+
+        $result = OpenIssueDetail::listIssueDetail($companyid);
+         
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_list');
+        return view('dailywork.list-openissue',array('cookieTrail' => $cookieTrail, 'salt' => $salt,'result' => $result, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    }
+
+
+    //单个openissue信息
+    public function openissueData($issue_id,$source_id)
+    {        
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+
+        $result['get']['issue_id'] = $issue_id;
+        $result['get']['source_id'] = $source_id; 
+
+        //$result['open_issue'] = OpenIssue::infoOpenIssue($issue_id);//单个openissue
+        $result['issuesource'] = IssueSource::infoIssueSource(['id'=>$source_id],'code');
+        if($result['issuesource']['code']=='Project'){ 
+            $result['project'] = Project::infoProject(['proj_id'=>$issue_id],'*');
+        }else if($result['issuesource']['code']=='Plan'){ 
+            $result['plan'] = plan::infoPlanIssue($issue_id);
+        }else{ 
+
+        }
+        $result['issueclass'] = IssueClass::infoIssueClass(['company_id'=>$companyid,'status'=>1]);//openissue分类   
+        $result['detail'] = OpenIssueDetail::listDetail($issue_id,$source_id);//detail列表
+        $result['company_user'] = User::infoCompanyUser($companyid);//公司成员
+        $result['department'] = Department::infoDepartlist(['company_id'=>$companyid,'status'=>1]);//公司部门
+        
+        return $result;
+    }
+
+
+    //编辑openissue-plan
+    public function openissueEdit(Request $request,$token,$sourceid,$issueid)
+    {       
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+        $uid = Session::get('USERINFO')->userId;
+
+        
+        $salt = $companyid.$this->salt.$uid.$sourceid.$issueid;
+        $cmpToken = hash('sha256',$salt);
+       
+        if($cmpToken != $token) {
+            return Redirect::back()->with('result', Lang::get('mowork.operation_disallowed'));
+        }
+
+        $result = self::openissueData($issueid,$sourceid);
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_input');
+        return view('dailywork.openissue-edit',array('cookieTrail' => $cookieTrail,'issueid' => $issueid,'sourceid' => $sourceid, 'result' => $result, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    }
+
+
+    //查看单个openissue
+    public function openissueCont(Request $request,Response $response)
+    { 
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+
+        $result = self::openissueData($request->get('issue_id'),$request->get('source_id'));
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_input');
+        return view('dailywork.openissue-cont',array('cookieTrail' => $cookieTrail, 'result' => $result, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    }
+
+
+    //单个openissue进度展示
+    public function openissueProgress(Request $request,$token, $sourceid,$issueid)
+    {  
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+        $uid = Session::get('USERINFO')->userId;
+
+        $salt = $companyid.$this->salt.$uid.$sourceid.$issueid;
+        $cmpToken = hash('sha256',$salt);       
+        if($cmpToken != $token) {
+            return Redirect::back()->with('result', Lang::get('mowork.operation_disallowed'));
+        }
+
+        $result = self::openissueData($issueid,$sourceid);
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_input');
+        return view('dailywork.openissue-progress',array('cookieTrail' => $cookieTrail, 'result' => $result,'issueid' => $issueid,'sourceid' => $sourceid,'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));     
+    }
+
+    //单个openissue审批展示
+    public function openissueShow(Request $request,Response $response)
+    { 
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+
+        $result = self::openissueData($request->get('issue_id'),$request->get('source_id'));
+        $cookieTrail = Lang::get('mowork.openissue').' &raquo; '.Lang::get('mowork.openissue_input');
+        return view('dailywork.openissue-show',array('cookieTrail' => $cookieTrail, 'result' => $result, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    }
+
+    //审批保存
+    public function openissueApprovalAction(Request $request,Response $response)
+    { 
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+
+        if(empty($request->get('intention')) || empty($request->get('issue_id'))){
+            //return Redirect::to('/');
+        }
+
+        $ary_approval = array(
+            'is_approved' => $request->get('intention'),
+            'approval_comment' => $request->get('cont_approval'),
+            'approval_date' => date('Y-m-d H:i:s',$_SERVER['REQUEST_TIME']),
+            'approval_person' => Session::get('userId')
+            );
+        $affect = OpenIssue::updateOpenIssue($ary_approval,array('issue_id'=>$request->get('issue_id'),'is_approved'=>0));
+        if(!empty($affect)){ 
+            return response()->json(array('code'=>1,'msg'=>LANG::get('mowork.approval_success')));
+        }else{ 
+            return response()->json(array('code'=>2,'msg'=>LANG::get('mowork.approval_fail')));
+        }
+    }
+
+
+    //进度保存
+    public function openissueProgresslAction(Request $request,Response $response)
+    { 
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+
+        if(empty($request->get('intention')) || empty($request->get('issue_id'))){
+            //return Redirect::to('/');
+        }
+
+        $num_complete = $request->get('num_lj');
+        for ($i=0; $i < $num_complete; $i++) {
+            $hasdetail_id = $request->get('complete_'.$i.'_13');
+            $ary_part = array(
+                'is_completed' => $request->get('complete_'.$i.'_11')
+            );
+            $affect = OpenIssueDetail::updateDetail($ary_part,array('id'=>$hasdetail_id));
+        }
+
+        if(!empty($affect)){ 
+            return response()->json(array('code'=>1,'msg'=>LANG::get('mowork.publish_success')));
+        }else{ 
+            return response()->json(array('code'=>2,'msg'=>LANG::get('mowork.save_fail')));
+        }
+    }
+
+
+    //保存openissue
+    public function updateopenissue(Request $request,Response $response)
+    {
+        $detail_id = 0;
+        $str_pic = '';
+
+        if(!Session::has('userId')) return Redirect::to('/');
+        $companyid = Session::get('USERINFO')->companyId;
+        $source_id = $request->get('source_id');
+        $issue_id = $request->get('issue_id');
+        if(empty($issue_id)){ $issue_id = 0; }
+
+        if(empty($companyid) || empty($source_id)){
+
+        }
+
+        //要删除的openissue
+        $delete_id = $request->get('part_delete');
+        if(!empty($delete_id)){
+            $ary_detailid = explode(',',$delete_id);
+            $res_delete = OpenIssueDetail::deleteDetailAry($ary_detailid);
+        }
+
+        //OPENISSUE信息
+        $num_part = $request->get('num_lj');
+        if($num_part >= 1){ 
+            for ($i=0; $i < $num_part; $i++) {
+                $hasdetail_id = $request->get('linjian_'.$i.'_11');
+                $issue_date = $request->get('linjian_'.$i.'_8');
+                if(empty($issue_date)){ 
+                    $issue_date = date('Y-m-d H:i:s',time());
+                }
+                $ary_part = array(
+                    'issue_id' => $issue_id,
+                    'source_id' => $source_id,
+                    'title' => $request->get('linjian_'.$i.'_0'),
+                    'issue_class' => $request->get('linjian_'.$i.'_1'),
+                    'description' => $request->get('linjian_'.$i.'_2'),
+                    'solution' => $request->get('linjian_'.$i.'_3'),
+                    'department' => $request->get('linjian_'.$i.'_4'),
+                    'leader' => $request->get('linjian_'.$i.'_5'),
+                    'plan_complete_date' => $request->get('linjian_'.$i.'_6'),
+                    'issuer' => $request->get('linjian_'.$i.'_7'),
+                    'issue_date' => $issue_date,
+                    'comment' => $request->get('linjian_'.$i.'_9'),
+                    'company_id' => $companyid
+                );
+                try{
+                    if(!empty($hasdetail_id)){ 
+                        $detail_id = OpenIssueDetail::updateDetail($ary_part,array('id'=>$hasdetail_id));
+                    }else{
+                        $detail_id = OpenIssueDetail::createDetail($ary_part);
+                        // 添加项目圈消息
+                        App\Models\ProjectCircle::createMsg([
+                            'uid'           => Session::get('userId'),
+                            'iid'           => $issue_id,
+                            'company_id'    => $companyid,
+                            'content'       => Lang::get('mowork.openissue').'“'.$request->get('linjian_'.$i.'_0').'”'.Lang::get('mowork.submit'),
+                            'source'        => 2,
+                            'type'          => 2,
+                        ]);
+                    }
+                }catch(Exception $e){ 
+                    return response()->json(array('code'=>2,'msg'=>LANG::get('mowork.save_fail')));
+                }
+            }
+        }
+
+        //文档上传
+        $num_pic = $request->get('num_pic'); 
+        if($num_pic >= 1 && !empty($issue_id)){ 
+            for ($i=0; $i < $num_pic; $i++) {
+                $str_pic = $str_pic.$request->get('pic_'.$i).',';
+            }           
+            $ary_pic = array(
+                'attached_file'=>mb_substr($str_pic,0,-1)
+            );
+            try{
+                $result_pic = OpenIssue::updateOpenIssue($ary_pic,array('issue_id'=>$issue_id));
+            }catch(Exception $e){ 
+                return response()->json(array('code'=>2,'msg'=>LANG::get('mowork.save_fail')));
+            }
+        }
+
+        if($detail_id > 0){
+            return response()->json(array('code'=>1,'msg'=>LANG::get('mowork.save_success')));
+        }else{
+            return response()->json(array('code'=>2,'msg'=>LANG::get('mowork.save_fail')));
+        }
+
+    }
+
+    public function openissueApprovalStamp(Request $request,Response $response, $token, $id)
+    {
+		if(!Session::has('userId')) return Redirect::to('/');
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+		$cookieTrail = Lang::get('mowork.openissue_approval');
+			
+		$compToken = hash('sha256',$company_id.$this->salt.$uid.$id);
+		if($compToken != $token) {
+			return Redirect::to('/dashboard/plan-approval')->with('result', Lang::get('mowork.operation_disallowed'));
+		}
+	
+		if($request->has('submit')){
+			 
+	       if($request->get('submit') == Lang::get('mowork.agree')){
+				$status = 1;//同意
+			} else {
+				$status = 2;//不同意
+			}
+		 
+			$res = OpenIssueDetail::where('id',$id)->first();
+			$issue_id = $res->issue_id;
+		    if($status ==1){
+		    	//批准后：通知责任人
+		    	$peoples = $res->leader;
+		    	$people = explode(',',$peoples);
+		    	$membertList = array_unique(array_filter($people, 'is_numeric'));
+//		    	event(new OpenissueApproved($membertList, $res->id,	Lang::get('mowork.issue_approved'),1, 0, 1, 0, $company_id));
+		    	
+				OpenIssueDetail::where(array('issue_id' => $issue_id, 'company_id' => $company_id))->update(array('is_approved' => 1, 
+						'approval_comment' => $request->get('comment')?$request->get('comment'):'', 'approval_date' => date('Y-m-d')));
+
+                // 添加项目圈消息
+                App\Models\ProjectCircle::createMsg([
+                    'uid'           => $uid,
+                    'iid'           => $issue_id,
+                    'company_id'    => $company_id,
+                    'content'       => Lang::get('mowork.openissue').'“'.$res['title'].'”'.Lang::get('mowork.approval').Lang::get('mowork.agreed'),
+                    'source'        => 2,
+                    'type'          => 2,
+                ]);
+				 
+			} else {//不批准：通知项目经理和提出人
+		    	$peoples = $res->leader.','.$res->issuer;
+                $people = explode(',', $peoples);
+		    	$membertList =array_unique(array_filter($people, 'is_numeric'));
+//		    	event(new OpenissueApproved($membertList, $res->id, Lang::get('mowork.issue_disapproved'),1, 0, 1, 0, $company_id));
+		    	OpenIssueDetail::where(array('issue_id' => $issue_id, 'company_id' => $company_id))->update(array('is_approved' => 2, 
+		    			'approval_comment' => $request->get('comment')?$request->get('comment'):'', 'approval_date' => date('Y-m-d')));
+
+                // 添加项目圈消息
+                App\Models\ProjectCircle::createMsg([
+                    'uid'           => $uid,
+                    'iid'           => $issue_id,
+                    'company_id'    => $company_id,
+                    'content'       => Lang::get('mowork.openissue').'“'.$res['title'].'”'.Lang::get('mowork.approval').Lang::get('mowork.disagreed'),
+                    'source'        => 2,
+                    'type'          => 2,
+                ]);
+		    }
+		    return Redirect::back()->with('result',Lang::get('mowork.operaion_success'));
+		}
+		$departments = Department::where('company_id',$company_id)->get();
+		
+		$issue = OpenIssueDetail::where('id',$id)->first();
+		$rows = OpenIssueDetail::where('issue_id',$issue->issue_id)->join('issue_class','issue_class.id','=','open_issue_detail.issue_class')
+		         ->orderBy('id','asc')
+		         ->select('open_issue_detail.*','issue_class.code','issue_class.name')->get();
+		
+		$isource = IssueSource::where('id',$issue->source_id)->first();
+		$salt = $company_id.$this->salt.$uid;
+		return view('dailywork.openissue-approval-stamp',array('cookieTrail' => $cookieTrail, 'rows' => $rows, 'token' => $token, 'issue' => $issue,
+				'isource' => $isource, 'salt' => $salt, 'departments' => $departments, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+    	
+    }
+
+    // ISSUE来源
+    public function openIssueSource(Request $request)
+    {
+        return view('dailywork.openissue-source', []);
+    }
+
+    // ISSUE分类
+    public function openIssueClass(Request $request)
+    {
+        return view('dailywork.openissue-class', []);
+    }
+}

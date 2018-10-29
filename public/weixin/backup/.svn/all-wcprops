@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup
+END
+auth.php
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/auth.php
+END
+authback.php
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/authback.php
+END
+pp.php
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/pp.php
+END
+jssdk.php
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/jssdk.php
+END
+weixin-back.php
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/weixin-back.php
+END
+weixin.php
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/weixin.php
+END
+auth-bind-back.php
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/auth-bind-back.php
+END
+auth-bind.php
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/mw2030/!svn/ver/1/project-master/trunk/public/weixin/backup/auth-bind.php
+END

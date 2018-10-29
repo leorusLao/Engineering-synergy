@@ -1,0 +1,49 @@
+@charset "utf-8";
+/**
+*	@ Date 2017.8
+*	@ Author Hemin
+*/
+* { margin:0; padding:0; box-sizing: border-box;}
+html { overflow-x:hidden; height:100%; font-size:14px;}
+body { with:100%; font-family:"微软雅黑",Verdana,arial;text-align:left; font-weight:normal; background-color:#ffffff; color:#666666; height:100%; position:relative;background-image:url(about:blank); background-attachment:fixed;/*必要，防抖动*/}
+table { border-collapse:collapse;border-spacing:0;}
+.fl { float:left;}
+.fr { float:right;}
+
+.f12 { font-size:12px;}
+.f13 { font-size:13px;}
+.f14 { font-size:14px;}
+.f16 { font-size:16px;}
+.f18 { font-size:18px;}
+.f20 { font-size:20px;}
+.f36 { font-size:36px;}
+.fB { font-weight:bold;}
+
+.clearfix { zoom:1;}
+.clearfix:after { content:'.'; display:block; visibility:hidden; clear:both; height:0;}
+.clear { clear:both;}
+
+p { text-indent:2em; }
+.b { font-weight:bold;}
+
+.line_h_20 { line-height:20px;}
+.line_h_24 { line-height:24px;}
+.line_h_26 { line-height:26px;}
+.line_h_50 { line-height:50px;}
+
+img { border:0px;}
+
+ul li { list-style:none;}
+
+.fl{ float:left;}
+.fr { float:right;}
+.text_c{text-align:center;}
+.text_l{text-align:left;}
+.text_r{text-align:right;}
+.displaynone { display:none;}
+.color_000 { color:#000;}
+.c_003e80 { color:#003e80;}
+.color_003e80 { color:#003e80;}
+a:link,a:visited { text-decoration: none; color:#333333;}
+a:hover { text-decoration: none; color:#005fb1;}
+

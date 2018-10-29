@@ -1,0 +1,33 @@
+/*mowork*/
+.margin-b10 {
+	margin-bottom: 10px;
+}
+
+.margin-b20 {
+	margin-bottom: 20px;
+}
+
+.margin-b30 {
+	margin-bottom: 30px;
+}
+
+.margin-t20 {
+	margin-top: 20px;
+}
+
+.margin-t-5 {
+	margin-top: -5px;
+}
+
+.margin-t-10 {
+	margin-top: -10px;
+}
+
+.margin-t-20 {
+	margin-top: -20px;
+}
+
+.modal.in .modal-dialog {
+	top:15%;
+}
+.nav_title { line-height:32px;padding-left:1%;}

@@ -1,0 +1,467 @@
+<?php
+
+namespace App\Http\Controllers;
+use App;
+ 
+use DB;
+use Illuminate\Support\Facades\Log;
+use Session;
+use Validator;
+use Illuminate\Http\Request;
+use App\Models\Company;
+use App\Models\Department;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Http\Response;
+use App\Models\UserCompany;
+use App\Models\UserResource;
+use App\Models\Permissions;
+use App\Models\UserRole;
+use App\Models\User;
+use App\Models\UserResourceRole;
+use App\Models\UserRoleConfig;
+use App\Models\ModuleManager;
+
+ 
+class RoleController extends Controller {
+	protected $locale;
+    
+ 	public function __construct()
+	{
+		session_start();
+		if(Session::has('locale')){
+			$this->locale = Session::get('locale');
+		}
+		else if(isset($_COOKIE['locale'])){
+			$this->locale = $_COOKIE['locale'];
+		}
+		else{
+			$this->locale = config('app.locale');
+		}
+		session_cache_limiter(false); //let page no expiration after post data
+	}
+
+	public function accountManagement(Request $request)
+	{
+		if(!Session::has('userId')) return Redirect::to('/');
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+		  	
+		if($request->has('submit')) {
+			 	
+			$validator = Validator::make($request->all(), [
+					'dep_code' => 'required',
+					'dep_name' => 'required',
+			]);
+			
+			if ($validator->fails()) {
+				 
+				return Redirect::back()->withErrors($validator);
+			}
+			
+			if(Department::isExistedDepCode($company_id, $request->dep_code)) {
+				return Redirect::back()->with('result', Lang::get('mowork.depcode_existed'));
+			}
+			
+			try {
+				Department::addDepartment($request->get('dep_code'), $request->get('dep_name'), $request->get('upper'), $request->get('manager'), $company_id);
+				
+			} catch (\Exception $e) {
+				return Redirect::back()->with('result', Lang::get('mowork.db_err'));
+			}
+			return Redirect::back()->with('result', Lang::get('mowork.operation_success'));
+		}
+  	    
+		$rows = UserCompany::where('user_company.company_id', $company_id)->join('user','user.uid','=','user_company.uid')->
+		        join('user_role','user_role.role_id', '=', 'user_company.role_id')->where('user_company.status',1)->
+		        select('user_company.*','user_role.role_code','user_role.role_name','user_role.english','user_role.role_description','user.fullname')->paginate(PAGEROWS);
+		
+		$cookieTrail =  Lang::get('mowork.user_management').' &raquo; '.Lang::get('mowork.account_management');
+		
+		$salt = $company_id.$this->salt.$uid;
+		 
+		return view('backend.account-management',array('salt' => $salt, 'cookieTrail' => $cookieTrail,'rows' => $rows, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+		
+	}
+	  
+	public function roleAssignment(Request $request, $token, $id) 
+	{
+		if(!Session::has('userId')) return Redirect::to('/');
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+		 
+		$cmpToken = hash('sha256',$company_id.$this->salt.$uid.$id );
+		
+		if($cmpToken != $token) {
+			return Redirect::to('/dashboard/account-management')->with('result', Lang::get('mowork.operation_disallowed'));
+		}
+	  
+		 
+		
+		if($request->has('submit')) {
+			 $role_id = $request->get('role');
+			 //$row = UserRole::where('id',$role)->first();
+			 //公司只能有一个系统管理员
+			 if($role_id == 20) {
+			    $adm = UserCompany::whereRaw("role_id = 20 AND company_id = $company_id AND (id != $id )")->count();
+			    if($adm > 0) {
+			    	return Redirect::back()->with('result', Lang::get('mowork.one_adm_only'));
+			    }
+			 }
+			 try {
+			    UserCompany::where(array('id' => $id, 'company_id' => $company_id))->update(array('role_id' => $role_id));
+			    return Redirect::back()->with('result', Lang::get('mowork.operation_success'));
+			 } catch (\Exception $e) {
+			 	return Redirect::back()->with('result', Lang::get('mowork.operation_failure'));
+			 }
+	 	}
+		
+	 	$row = UserCompany::where(array('id' => $id, 'company_id' => $company_id))->first();
+		$companyRoleList = UserRole::companyUserRoleList();
+		 
+
+		return view('backend.role-assignment',array('roleList' => $companyRoleList , 'row' => $row, 'token' => $token, 'id' => $id, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+	 		
+	}
+ 	
+	public function roleManagement(Request $request)
+	{
+		if(!Session::has('userId')) return Redirect::to('/');
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+		
+		if($request->has('submit')) {
+			if(UserRole::isExistedRoleCode($request->get('role_code'), $company_id)) {
+				return Redirect::back()->with('result', Lang::get('mowork.rolecode_existed'));
+			} else if(UserRole::isExistedRoleName($request->get('role_name'), $company_id)) {
+				return Redirect::back()->with('result', Lang::get('mowork.rolename_existed'));
+			}
+			
+			//获取自定义角色号, 没有获得,添加起始号
+			$row = UserRoleConfig::where('company_id',$company_id)->first();
+			if($row) {
+				$current_role_id = $row->current_role_id;
+			} else {
+				$current_role_id = 101;
+				UserRoleConfig::create(array('start_role_id' => 101, 'current_role_id' => 101, 'company_id' => $company_id));
+			}
+			
+			$role_code = $request->get('role_code');
+			$role_name = $request->get('role_name');
+			$description = $request->get('description');
+			DB::beginTransaction();
+			try {
+				UserRole::addUserRole($current_role_id, $role_code, $role_name, $description, $company_id);
+				UserRoleConfig::where('company_id',$company_id)->increment('current_role_id',1);
+			} catch (\Exception $e) {
+				DB::rollback();
+				return Redirect::back()->with('result', Lang::get('mowork.operation_failure'));
+			}
+			DB::commit();
+			return Redirect::back()->with('result', Lang::get('mowork.operation_success'));
+		} else if ($request->has('update')) {
+		     UserRole::where(array('role_id' => $request->get('role_id'), 'company_id' => $company_id))
+		     ->update(array('role_code' => $request->get('role_code'), 'role_name' => $request->get('role_name'), 'role_description' => $request->get('description')));
+		     return Redirect::back()->with('result', Lang::get('mowork.operation_success'));
+		}
+		
+		$cookieTrail = Lang::get('mowork.user_management').' &raquo; '.Lang::get('mowork.user_role_management');
+		$rows = UserRole::whereRaw('role_id >= 20 AND company_id = 0 OR company_id='.$company_id)->get();
+		
+		return view('backend.role-management',array('rows' => $rows, 'cookieTrail' => $cookieTrail,  'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+		
+	}
+	
+	public function roleControl(Request $request)
+	{
+		if(!Session::has('userId')) return Redirect::to('/');
+		$company_id = Session::get('USERINFO')->companyId;
+		$uid = Session::get('USERINFO')->userId;
+		$cookieTrail = Lang::get('mowork.user_management').' &raquo; '.Lang::get('mowork.user_role_control');
+		$role_id = 0;
+		$actway = 1;
+
+		if($request->has('permissons')) {
+			$role_id = $request->get('role_id');
+			$permissions = $request->get('permissons');
+			$res = DB::select('select `permission_id` from `role_has_permissions` where `role_id` = :id', ['id' => $role_id]);
+			if(empty($res)) {
+				$res = DB::insert('insert into `role_has_permissions` (`permission_id`, `role_id`) values (?, ?)', [$permissions, $role_id]);
+			} else {
+				$res = DB::update('update `role_has_permissions` set `permission_id` = "'.$permissions.'" where `role_id` = ?', [$role_id]);
+			}
+			Permissions::init();
+			return json_encode([$res]);
+		}
+
+		if($request->has('role_id')) {
+			$role_id = $request->get('role_id');
+			$res = DB::select('select `permission_id` from `role_has_permissions` where `role_id` = :id', ['id' => $role_id]);
+			return json_encode(explode(',', $res[0]->permission_id));
+		}
+
+
+		$roles = UserRole::whereRaw('( company_id = 0 OR company_id = ' .$company_id . ' ) AND role_id >= 20')->get();
+		 
+		//########################
+		 
+//		$rows = UserResource::where('is_active',1)->orderBy('resource_id','asc')->get();
+		$permissions = new App\Models\Permissions();
+		$data = $permissions->permissionsData(['guard_name' => 'web']);
+		//########################
+		
+		return view('backend.role-control',array('roles' => $roles, 'data' => $data, 'cookieTrail' => $cookieTrail, 'role_id' => $role_id,
+				'actway' => $actway, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+	
+	}
+ 
+ 	public function roleResourceSetup(Request $request)
+ 	{
+ 		if(!Session::has('userId')) return Redirect::to('/');
+ 		$company_id = Session::get('USERINFO')->companyId;
+ 		$uid = Session::get('USERINFO')->userId;
+ 		
+ 		$role_id = $request->get('role_id');
+ 		$resource_id = $request->get('resource_id');
+ 		if($request->has('read')) {
+ 			$read = 1;
+ 		} else {
+ 			$read = 0;
+ 		}
+ 		
+ 		if($request->has('add')) {
+ 			$add = 1;
+ 		} else {
+ 			$add = 0;
+ 		}
+ 		
+ 		if($request->has('delete')) {
+ 			$delete = 1;
+ 		} else {
+ 			$delete = 0;
+ 		}
+ 		
+ 		if($request->has('update')) {
+ 			$update = 1;
+ 		} else {
+ 			$update = 0;
+ 		}
+ 		
+ 		if($request->has('approval')) {
+ 			$approval = 1;
+ 		} else {
+ 			$approval = 0;
+ 		}
+ 		
+ 		if($request->has('actway')) {
+ 			$actway = $request->get('actway');
+ 		} else {
+ 			$actway = 1;
+ 		}
+ 		   
+ 		
+ 		$row = UserResourceRole::whereRaw('role_id = '. $role_id . ' AND resource_id = '.$resource_id. ' AND (company_id = 0 OR company_id= ' . $company_id. ')')->first();
+ 		
+ 		try {
+ 			if($row) {
+ 				UserResourceRole::whereRaw('role_id = '. $role_id . ' AND resource_id = '.$resource_id. ' AND (company_id = 0 OR company_id= ' . $company_id. ')')->
+ 				update(array('pread' => $read, 'padd' => $add, 'pdelete' => $delete, 'pupdate' => $update, 'papproval' => $approval ));
+ 			} else {
+ 				UserResourceRole::create(array('role_id' => $role_id, 'resource_id' => $resource_id, 'resource_id' => $resource_id, 
+ 						     'pread' => $read, 'padd' => $add, 'pdelete' => $delete, 'pupdate' => $update, 'papproval' => $approval, 'company_id' => $company_id));
+ 			}
+ 		} catch (\Exception $e) {
+ 			return Redirect::back()->with(array('result' => Lang::get('mowork.operation_failure'), 'role_id' => $role_id, 'resource_id' => $resource_id, 'actway' => $actway));
+ 		}
+ 		return Redirect::back()->with(array('result' => Lang::get('mowork.operation_success'), 'role_id' => $role_id, 'resource_id' => $resource_id, 'actway' => $actway));
+ 	}
+ 	
+ 	public function getRoleInfo(Request $request)
+ 	{
+ 		if(!Session::has('userId')) return Redirect::to('/');
+ 		$company_id = Session::get('USERINFO')->companyId;
+ 		$uid = Session::get('USERINFO')->userId;
+ 			
+ 		$role_id = $request->get('role_id');
+ 		 
+ 		 
+ 		$row = UserRole::where(array('role_id' => $role_id, 'company_id' => $company_id ))->first();
+ 		 
+ 		if($row) {
+ 			$res = array('1' => $row->role_code, '2' => $row->role_name, '3' => $row->role_description);
+ 		} else {
+ 			$res = array('1' => '', '2' => '', '3' => '');
+ 		}
+ 	 
+ 		return json_encode($res);
+ 	}
+ 	
+ 	public function getRoleResourceInfo(Request $request) 
+ 	{
+ 		if(!Session::has('userId')) return Redirect::to('/');
+ 		$company_id = Session::get('USERINFO')->companyId;
+ 		$uid = Session::get('USERINFO')->userId;
+ 		
+ 		$role_id = $request->get('role_id');
+ 		$resource_id = $request->get('resource_id');
+ 		 
+ 		$row = UserResourceRole::whereRaw('role_id = '. $role_id . ' AND resource_id = '.$resource_id. ' AND (company_id = 0 OR company_id= ' . $company_id. ')')->first();
+ 		
+ 		if($row) {
+ 			$res = array('1' => $row->pread, '2' => $row->padd, '3' => $row->pdelete, '4' => $row->pupdate, '5' => $row->papproval);
+ 		} else {
+ 			$res = array('1' => 0, '2' => 0, '3' => 0, '4' => 0, '5' => 0);
+ 		}
+ 		 
+ 		return json_encode($res);
+ 	}
+
+	public function permissionManagement(Request $request, $pid = 0)
+	{
+		$id = $request->id;
+		$add = $request->add;
+		$update = $request->update;
+		$delete = $request->delete;
+		$name = $request->name;
+		$icon = $request->icon;
+		$icon = htmlspecialchars($icon);
+		$permissions = new App\Models\Permissions();
+
+		// 新增
+		if(!$id && $add)
+		{
+			$permissions->pid = $request->pid;
+			$permissions->route_name = $request->route_name;
+			$permissions->display_name = $request->display_name;
+			$name && $permissions->name = $request->name;
+			$permissions->is_menu = $request->is_menu;
+			$permissions->sort = $request->sort;
+			$icon && $permissions->icon = $request->icon;
+
+			$res = $permissions->save();
+
+			return [$res];
+
+		}
+
+		// 编辑
+		if($id && $update)
+		{
+			$data = [
+				'pid' 			=> $request->pid,
+				'route_name' 	=> $request->route_name,
+				'display_name' 	=> $request->display_name,
+				'is_menu' 		=> $request->is_menu,
+				'sort'			=> $request->sort,
+				];
+			$name && $data['name'] = $name;
+			$icon && $data['icon'] = $icon;
+
+			$res = $permissions->where('id', $id)->update($data);
+
+			return [$res];
+		}
+
+		// 删除
+		if($id && $delete)
+		{
+			$post = App\Models\Permissions::find($id);
+			$post->delete();
+			if($post->trashed()) {
+				return [1];
+			}else {
+				return [0];
+			}
+		}
+
+		$rows = Permissions::where(['guard_name' => 'web', 'pid' => $pid])->orderBy('sort')->get();
+		$permissions = new App\Models\Permissions();
+		$selectData = $permissions->permissionsData(['guard_name' => 'web']);
+
+		$tmpCookieTrail = '';
+		if($pid != 0)
+		{
+			$tmpId = $pid;
+			do{
+				$tmp = Permissions::where(['guard_name' => 'web', 'id' => $tmpId])->get(['display_name', 'pid']);
+				$tmpCookieTrail = ' &raquo; '. $tmp[0]->display_name . $tmpCookieTrail;
+				$tmpId = $tmp[0]->pid;
+			}while($tmpId != 0);
+		}
+		$cookieTrail = Lang::get('mowork.user_management').' &raquo; '.Lang::get('mowork.user_permission_management').$tmpCookieTrail;
+
+		return view('backend.permission-management',array('rows' => $rows, 'selectData' => $selectData, 'pid' => $pid, 'cookieTrail' => $cookieTrail, 'pageTitle' => Lang::get('mowork.dashboard'),'locale' => $this->locale));
+	}
+
+	// 审核管理
+	public function verifyControl(Request $request)
+	{
+		$company_id = Session::get('USERINFO')->companyId;
+		$uidsArr = UserCompany::where('company_id', $company_id)->pluck('uid')->toArray();
+		$uidArr = User::whereIn('uid', $uidsArr)->pluck('fullname', 'uid')->toArray();
+		if($request->has('submit')){
+			$submit = $request->get('submit');
+			try{
+				if($submit == 'delete'){
+					$res = ModuleManager::where('id', $request->get('id'))->delete();
+					return json_encode($res);
+				}
+
+				$module = $request->get('module');
+				$mode = $request->get('mode');
+				$founder = $request->get('founder');
+				$verifyer = $request->get('verifyer');
+				$ratifyer = $request->get('ratifyer');
+				$founder = implode(',', $founder);
+				$verifyer = implode(',', $verifyer);
+				$ratifyer = implode(',', $ratifyer);
+				if($submit == 'add'){
+					$res = ModuleManager::create(compact('module', 'mode', 'founder', 'verifyer', 'ratifyer', 'company_id'));
+					$res = $res->id;
+				}elseif($submit == 'update'){
+					$res = ModuleManager::where(['id' => $request->get('id') ,'company_id' => $company_id])->update(compact('module', 'mode', 'founder', 'verifyer', 'ratifyer'));
+				}
+				return json_encode($res);
+			}catch(\Exception $e){
+				Log::debug($e->getMessage());
+				return json_encode(0);
+			}
+		}
+
+		$module = config('app.module');
+		$mode = config('app.mode');
+
+		$moduleArr = [];
+		$rows = ModuleManager::where('company_id', $company_id)->paginate(PAGEROWS);
+		foreach($rows as $k => $v){
+			$moduleArr[] = $v->module;
+			$tmp = explode(',' ,$v->founder);
+			foreach($tmp as $kk => $vv) {
+				$tmp[$kk] = $uidArr[$vv];
+			}
+			$rows[$k]->founder = implode(',', $tmp);
+			if($v->verifyer == 0){
+				$rows[$k]->verifyer = '-';
+			}else{
+				$tmp = explode(',' ,$v->verifyer);
+				foreach($tmp as $kk => $vv) {
+					$tmp[$kk] = $uidArr[$vv];
+				}
+				$rows[$k]->verifyer = implode(',', $tmp);
+			}
+			if($v->ratifyer == 0){
+				$rows[$k]->ratifyer = '-';
+			}else{
+				$tmp = explode(',' ,$v->ratifyer);
+				foreach($tmp as $kk => $vv) {
+					$tmp[$kk] = $uidArr[$vv];
+				}
+				$rows[$k]->ratifyer = implode(',', $tmp);
+			}
+		}
+		$cookieTrail = Lang::get('mowork.user_management').' &raquo; '.Lang::get('mowork.verify_control');
+
+		return view('backend.verify-control', compact('uidArr', 'rows', 'cookieTrail', 'module', 'mode', 'moduleArr'));
+	}
+}

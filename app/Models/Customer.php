@@ -1,0 +1,207 @@
+<?php
+
+namespace App\Models;
+use Eloquent;
+use DB;
+
+class Customer extends Eloquent
+{
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * a user may belong to mutiple companys
+     *
+     * @var array
+     */
+    protected $primaryKey = 'id';
+    protected $table = 'customer';
+
+    protected $fillable = array('cust_company_id', 'company_id','contact_person','phone', 'email', 'wechat', 'weibo', 'cust_type',
+            'product','important','tax_no', 'cust_company_name', 'cust_company_address', 'credibility', 'grade', 'grade_code',
+            'important_code', 'credibility_code', 'cust_type_code', 'invite_status', 'is_active');
+    protected $guarded = array('id');
+    public $timestamps = true;
+
+    //TODO
+    static  public function addEmployee($emp_code, $fullname, $dep_id, $dep_name, $emp_start, $company_id)
+    {
+        //check email or mobile phone to see if can assocaite to user table
+        self::create(array('emp_code' => $emp_code, 'dep_id' => $dep_id, 'dep_name' => $dep_name, 'emp_start' => $emp_start, 'company_id' => $company_id));
+    }
+
+    static  public function isExistedEmpCode($emp_code, $company_id)
+    {
+        $existed = self::where('company_id',$comapny_id)->where('emp_code',$epm_code)->first();
+        if($existed) return true;
+        return false;
+    }
+
+    static public function updateEmployeeInfo($uid, $company_id, $dep_id, $dep_name, $emp_code, $emp_start, $emp_end)
+    {
+        self::where(array('uid' => $uid, 'company_id' => $company_id ))->update(array('emp_code' => $emp_code, 'dep_id' => $dep_id? $dep_id: 0, 'dep_name' => $dep_name, 'emp_start' => $emp_start, 'emp_end' => $emp_end? $emp_end: null));
+    }
+
+    static public function assingEmployeeRole($uid, $company_id, $role_code)
+    {
+        self::where(array('uid' => $uid, 'company_id' => $company_id ))->update(array('role_code' => $role_code));
+
+    }
+
+    static public function dismissEmployee($uid, $company_id)
+    {
+        self::where(array('uid' => $uid, 'company_id' => $company_id ))->update(array('status' => 2));
+
+    }
+
+    static public function deleteEmployee($uid, $company_id)
+    {
+        self::where(array('uid' => $uid, 'company_id' => $company_id ))->delete();
+
+    }
+
+    static public function getEmployees($company_id, $display_rows)
+    {
+        $rows = UserCompany::where('company_id',$company_id)->join('user','user.uid','=','user_company.uid')->
+        select('user.*','user_company.emp_code', 'user_company.dep_name', 'user_company.emp_start','user_company.emp_end','user_company.status as flag')->paginate($display_rows);
+        return $rows;
+
+    }
+
+    static public function getEmpInfo($company_id, $uid)
+    {
+        $row = UserCompany::where(array('company_id' => $company_id, 'user_company.uid' => $uid ))->join('user','user.uid','=','user_company.uid')->
+        select('user.*','user_company.dep_name', 'user_company.emp_code', 'user_company.emp_start','user_company.emp_end')->first();
+        return $row;
+
+    }
+ 
+    //修改客户资料
+    public static function updateCustomer($company_id,$cst_company_id,$array)
+    {
+        $where = array('company_id'=>$company_id,'cust_company_id'=>$cst_company_id);
+        $result = self::where($where)->update($array);
+        return $result;
+    }
+
+    //新增加客户资料
+    public static function createCustomerApi($array)
+    {
+        $result = self::create($array);
+        return $result;
+    }
+
+
+    //获取客户资料列表
+    public static function getCustomerlist($company_id,$page_size,$curr_page)
+    { 
+        $total_count = self::select('id')->where(array('company_id'=>$company_id))->count();
+
+        $data['total_page'] = ceil($total_count / $page_size); //总页面数
+        if($curr_page >= $data['total_page']){ $curr_page = $data['total_page']; } //大于总页面数
+        $size_from = $page_size * ($curr_page - 1);
+        if($size_from < 0){ $size_from = 0; }
+
+        $data['cst_info'] = self::select('cust_company_id as cst_company_id', 'cust_company_name as cst_company_name',
+                            'grade','credibility as credit_class')
+                ->where(array('company_id'=>$company_id))->offset($size_from)->limit($page_size)->get();        
+        
+        $data['curr_page'] = $curr_page; //当前页面 
+        $data['page_size'] = $page_size; //单页数  
+        $data['total_count'] = $total_count; //总条数
+
+        return $data;
+    }
+
+    //获取客户资料列表
+    public static function getCustomerlistProject($company_id)
+    { 
+        $result = self::select('customer.cust_company_id','company.company_name')
+                        ->leftJoin('company','company.company_id','=','customer.cust_company_id')
+                        ->where(['customer.company_id'=>$company_id])->get();
+        return $result;
+    }
+
+    //获取客户资料详情
+    public static function getCustomer($cst_company_id)
+    { 
+        $where = array('cust_company_id'=>$cst_company_id);
+        $result = self::select('company_id','contact_person as contact_man','credibility as credit_class',
+            'cust_company_address as cst_company_address','cust_company_id as cst_company_id',
+            'cust_company_name as cst_company_name','cust_type as cst_type','email','grade','important',
+            'phone','product')->where($where)->first(); 
+        return $result;
+    }
+
+    //获取客户名称
+    public static function getCustomerName($cst_company_id)
+    { 
+        $where = array('cust_company_id'=>$cst_company_id);
+        $result = self::select('cust_company_name as customer_name')->where($where)->first(); 
+        return $result;
+    }
+   
+    //搜索公司客户资料
+    public static function searchCustomer($company_id,$cst_sup_name,$page_size,$curr_page)
+    {
+        //$total_count = self::where(array('company_id'=>$company_id))
+        //      ->where('cust_company_name','like','%'.$cst_sup_name.'%')->count(); //直接得到数字
+        $sql = "select count(*) as num from customer where locate(?,cust_company_name) and company_id = ?";
+        $total_count = DB::select($sql,[$cst_sup_name,$company_id]);
+        $total_count = $total_count[0]->num; //上面方式得到是数组
+        $data['total_page'] = ceil($total_count / $page_size); //总页面数
+        if($curr_page >= $data['total_page']){ $curr_page = $data['total_page']; } //大于总页面数
+        $size_from = $page_size * ($curr_page - 1);
+        if($size_from < 0){ $size_from = 0; }
+
+        //$data['cst_sup'] = self::select('cust_company_id as cst_company_id','cust_company_address as cst_company_address',
+        //      'cust_company_name as cst_company_name')->where(array('company_id'=>$company_id))
+        //      ->where('cust_company_name','like','%'.$cst_sup_name.'%')->offset($size_from)->limit($page_size)->get();
+        $sql = "select cust_company_id as cst_company_id, cust_company_address as cst_company_address, 
+                cust_company_name as cst_company_name from customer where company_id =? and 
+                locate(?,cust_company_name) limit ?,?";
+        $data['cst_sup'] = DB::select($sql,[$company_id,$cst_sup_name,$page_size,$size_from]);
+        $data['curr_page'] = $curr_page; //当前页面 
+        $data['page_size'] = $page_size; //单页数  
+        $data['total_count'] = $total_count; //总条数
+
+        return $data;
+    }
+
+    //查询是否是客户关系
+    public static function customerRelation($company_id,$sup_company_id){ 
+        $result = self::where(array('company_id'=>$company_id,'cust_company_id'=>$sup_company_id))->first();
+        return $result;
+    }
+
+    //查询是否是客户关系,给出公司相关信息
+    public static function customerName($company_id,$cust_company_id){ 
+        $result = self::select('cust_company_name')->where(array('company_id'=>$company_id,'cust_company_id'=>$cust_company_id))->first();
+        return $result;
+    }
+
+    //删除公司客户资料
+    public static function deleteCustomer($company_id,$cst_sup_id)
+    { 
+        $result = self::where(array('company_id'=>$company_id,'cust_company_id'=>$cst_sup_id))->delete();
+        return $result;
+    }
+
+    static  public function isExistedCustomer($cust_company_id, $company_id)
+    {
+    	$existed = self::where(array('cust_company_id' => $cust_company_id, 'company_id' => $company_id))->first();
+    	if($existed) return true;
+    	return false;
+    }
+    
+    static  public function addCustomer($cust_company_id, $company_id, $ceo, $legal_person, $phone, $email, $company_name)
+    {
+    	try {
+    		self::create(array('cust_company_id' => $cust_company_id, 'company_id' => $company_id, 'contact_person' => $ceo? $ceo: $legal_person, 'phone' => $phone, 'email' => $email, 'cust_company_name' => $company_name));
+    	} catch (\Exception $e) {
+    		return 0;
+    	}
+    	return 1;
+    }
+}
+

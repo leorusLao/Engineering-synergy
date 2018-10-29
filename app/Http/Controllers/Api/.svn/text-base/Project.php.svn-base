@@ -1,0 +1,359 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+use App;
+use DB;
+use Session;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Http\Controllers\CheckApi;
+
+
+class Project extends App\Http\Controllers\Controller
+{
+
+    /** 
+    * 获取未完成立项（零件空缺）列表
+    * @param 
+    * @return 
+    */    
+    public function list_vacancy(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目总列表
+    * @param 
+    * @return 
+    */    
+    public function list_project(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目待审批列表
+    * @param 
+    * @return 
+    */     
+    public function list_pendingproject(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目已审批列表
+    * @param 
+    * @return 
+    */     
+    public function list_approvedproject(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目分发列表
+    * @param 
+    * @return 
+    */     
+    public function list_sendproject(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目关联列表
+    * @param 
+    * @return 
+    */     
+    public function list_relationproject(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 删除项目
+    * @param 
+    * @return 
+    */    
+    public function delete_project(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取立项基础信息
+    * @param 
+    * @return 
+    */ 
+    public function get_baseinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取分发关联项目基础信息
+    * @param 
+    * @return 
+    */ 
+    public function get_sendprojectinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 新增分发关联项目基础信息
+    * @param 
+    * @return 
+    */ 
+    public function create_sendprojectinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 修改分发关联项目基础信息
+    * @param 
+    * @return 
+    */ 
+    public function update_sendprojectinfo(Request $request,Response $response)
+    { 
+
+    }
+
+
+    /** 
+    * 新增分发关联状态
+    * @param 
+    * @return 
+    */ 
+    public function create_sendprojectstatus(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 修改立项基础信息
+    * @param 
+    * @return 
+    */ 
+    public function update_baseinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 项目提交审批
+    * @param 
+    * @return 
+    */ 
+    public function update_approval(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 提交项目审批结果
+    * @param 
+    * @return 
+    */ 
+    public function update_approvalresult(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 新增立项基础信息
+    * @param 
+    * @return 
+    */ 
+    public function create_baseinfo(Request $request,Response $response)
+    { 
+
+    }
+
+
+    /** 
+    * 获取当前立项项目编号
+    * @param 
+    * @return 
+    */ 
+    public function get_projectnumber(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取当前立项零件编号(同时附带项目编号)
+    * @param 
+    * @return 
+    */ 
+    public function get_partnumber(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取零件信息列表
+    * @param 
+    * @return 
+    */ 
+    public function list_partinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取零件信息详情
+    * @param 
+    * @return 
+    */ 
+    public function get_partinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 删除单个零件
+    * @param 
+    * @return 
+    */ 
+    public function delete_partinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 修改立项零件信息
+    * @param 
+    * @return 
+    */ 
+    public function update_partinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 新增立项零件信息
+    * @param 
+    * @return 
+    */ 
+    public function create_partinfo(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 修改文档
+    * @param 
+    * @return 
+    */ 
+    public function update_document(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 新增文档
+    * @param 
+    * @return 
+    */ 
+    public function create_document(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 删除项目文档
+    * @param 
+    * @return 
+    */ 
+    public function delete_document(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目文档列表
+    * @param 
+    * @return 
+    */ 
+    public function list_document(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目文档信息
+    * @param 
+    * @return 
+    */ 
+    public function get_document(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取公司部门列表(已有？)
+    * @param 
+    * @return 
+    */ 
+    public function list_department(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取公司部门下人员(已有？)
+    * @param 
+    * @return 
+    */ 
+    public function list_department(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取公司日历列表
+    * @param 
+    * @return 
+    */ 
+    public function list_calendar(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取项目性质列表
+    * @param 
+    * @return 
+    */ 
+    public function list_property(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 获取供应商列表
+    * @param 
+    * @return 
+    */ 
+    public function list_supplier(Request $request,Response $response)
+    { 
+
+    }
+
+    /** 
+    * 给供应商发送消息
+    * @param 
+    * @return 
+    */ 
+    public function create_suppliermessage(Request $request,Response $response)
+    { 
+
+    }
+
+
+
+}

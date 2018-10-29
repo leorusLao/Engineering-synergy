@@ -1,0 +1,140 @@
+@extends('backend-base') 
+
+@section('css.append')
+
+@stop
+ 
+@section('content')
+  
+<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+ 
+<ul class="nav nav-justified margin-b30">
+  <li><a href="/dashboard/admin-region">{{Lang::get('mowork.country')}}</a></li>
+  <li><a href="/dashboard/admin-region/province">{{Lang::get('mowork.province')}}{{Lang::get('mowork.state')}}</a></li>
+  <li class='active'><a href="/dashboard/admin-region/city">{{Lang::get('mowork.city')}}</a></li>
+  
+</ul>
+@if(Session::has('result'))
+	 <div class="text-center text-danger">
+          {{Session::get('result')}}
+     </div>
+@endif
+ 
+<div class="col-sm-6">
+    <div class="col-sm-6">
+    <form action="/dashboard/admin-region/city" method="post" id="form1" name='form1'>
+       
+    <select id='country' name='country' class="form-control" style="width:120px">
+     @foreach ($countryList as $val)
+       <option value="{{$val->country_id}}"  @if($val->country_id == $selectedCountry) selected @endif>
+       {{$val->name}}
+       </option>
+     @endforeach
+    </select>
+  
+     <input name="_token" type="hidden" value="{{ csrf_token() }}">
+     </form> 
+     </div>
+     
+     <div class="col-sm-6">
+      <form action="/dashboard/admin-region/city" method="post" id="form2" name='form2'>
+       
+    <select id='province' name='province' class="form-control" style="width:120px">
+     <option value="0"></option>
+     @foreach ($provinceList as $val)
+       <option value="{{$val->province_id}}"  @if($val->province_id == $selectedProvince) selected @endif>
+       {{$val->name}}
+       </option>
+     @endforeach
+    </select>
+  
+     <input name="_token" type="hidden" value="{{ csrf_token() }}">
+     </form> 
+     </div>
+ </div> 
+ 
+@if(count($rows))
+  
+  <table class="table data-table display sort table-responsive">
+
+          <thead>
+            <tr>
+              <th>{{Lang::get('mowork.city')}}</th>
+              <th>{{Lang::get('mowork.in_english')}}</th>
+              <th>{{Lang::get('mowork.alphabet_code')}}</th>
+  			  <th>{{Lang::get('mowork.province')}}{{Lang::get('mowork.state')}}</th>
+      		  <th>{{Lang::get('mowork.country_name')}}</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+  @endif
+
+  @foreach($rows as $row) 
+  
+
+    <tr> 
+    <td>{{ $row->name }}</td>
+    <td>{{ $row->name_en }}</td>
+    <td>{{ $row->city_code }}</td>
+    <td>{{ $row->province }}</td>
+    <td>{{ $row->country }}</td>
+    </td>
+    </tr>
+
+  @endforeach
+
+
+
+  @if(count($rows))
+
+     </tbody>
+
+     </table>
+ 
+     <div class='text-center'><?php echo $rows->links(); ?></div>
+
+     <div class="clearfix"></div>
+   @endif
+  
+</div>
+
+@stop
+  
+@section('footer.append')
+ 
+<script type="text/javascript" src="/js/DataTables-1.10.15/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/DataTables-1.10.15/dataTables.bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+    $(function(){
+       $('#me8').addClass('active');   
+         
+	   $('#country').change(function() {
+     	  country = $('#country').val();
+     	 
+          input = $("<input>").attr("type", "hidden").attr("name", "country").val(country);
+    	  $('#form1').append($(input));
+    	  this.form.submit();
+
+       });
+
+	   $('#province').change(function() {
+	     	  province = $('#province').val();
+	     	 
+	       	  input = $("<input>").attr("type", "hidden").attr("name", "province").val(province);
+	   	 	  $('#form2').append($(input));
+	   	 	  this.form.submit();
+
+	     });
+
+       
+    });
+
+    
+ </script>
+
+@stop

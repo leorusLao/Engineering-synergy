@@ -1,0 +1,16 @@
+<?php
+namespace App\Models;
+use Eloquent;
+
+class CompanyConfig extends Eloquent {
+
+	protected $primaryKey = 'id';
+	protected $table = 'company_config';
+
+	protected $fillable = array('cfg_name','current_value','current_year','length', 'comment', 'company_id');
+	protected $guarded = array('id');
+	public $timestamps = true;
+ 	 
+}
+
+?>

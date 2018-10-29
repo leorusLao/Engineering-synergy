@@ -1,0 +1,132 @@
+@extends('backend-base')
+
+@section('css.append')
+<link href="/asset/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css" rel="stylesheet">
+@stop 
+
+@section('content')
+
+<div class="col-xs-12 col-sm-4 col-sm-offset-4">
+
+	@if(Session::has('result'))
+	<div class="text-center text-danger marging-b20">{{Session::get('result')}}</div>
+	@endif @if(isset($errors))
+	<h3>{{ Html::ul($errors->all(), array('class'=>'text-danger col-sm-3
+		error-text'))}}</h3>
+	@endif
+
+	<form
+		action="/dashboard/project-config/node-type/edit/{{$token}}/{{$row->type_id}}"
+		method='post' autocomplete='off' role='form'
+		onsubmit='return validateForm();'>
+		<fieldset>
+			<div class="form-group input-group">
+				<div class="input-group-addon">
+					{{Lang::get('mowork.node_type')}}*
+				</div>
+				<input class="form-control" name="type_name" type="text"
+					value="{{$row->type_name}}" id="type_name" />
+			</div>
+			
+			<div class="form-group input-group">
+				<div class="input-group-addon">
+					{{Lang::get('mowork.in_english')}}
+				</div>
+				<input class="form-control" name="type_name_en" type="text"
+					value="{{$row->type_name_en}}" id="type_name_en" />
+			</div>
+
+			<div class="form-group input-group">
+				<div class="input-group-addon">
+					{{Lang::get('mowork.ctrl_by_dep')}}*
+				</div>
+				<?php $deps = explode(',', $row->ctrl_by_dep);?>
+				@foreach ($departments as $val)
+				<div class="pull-left">
+					&nbsp;&nbsp; <input type="checkbox" name="deps[]"
+						value="{{$val->dep_id}}" @if(in_array($val->dep_id, $deps)) 
+													checked
+												 @endif
+						> {{$val->name}} &nbsp;&nbsp;
+				</div>
+				@endforeach
+			</div>
+
+			<div class="form-group input-group">
+				<div class="input-group-addon">
+					{{Lang::get('mowork.fore_color')}}
+				</div>
+
+
+				<div id="cp1" class="input-group colorpicker-component">
+					<input type="text" name='forecolor' value="{{$row->fore_color}}"
+						class="form-control" /> <span class="input-group-addon"><i></i></span>
+				</div>
+			</div>
+
+			<div class="form-group input-group">
+				<div class="input-group-addon">
+					{{Lang::get('mowork.back_color')}}
+				</div>
+
+
+				<div id="cp2" class="input-group colorpicker-component">
+					<input type="text" name='backcolor' value="{{$row->back_color}}"
+						class="form-control" /> <span class="input-group-addon"><i></i></span>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<input type="submit" name="submit" class="btn btn-lg btn-info"
+					value="{{Lang::get('mowork.update')}}">
+			</div>
+
+			<input name="_token" type="hidden" value="{{ csrf_token() }}">
+		</fieldset>
+	</form>
+
+</div>
+@stop @section('footer.append')
+<script src="/asset/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+<script type="text/javascript">
+  
+    $(function(){
+    	 
+        $('#me8').addClass('active');  
+        $('#cp1').colorpicker();  
+    	$('#cp2').colorpicker(); 
+ 
+     });
+
+    $("[rel=tooltip]").tooltip({animation:false});
+
+    function validateForm(){
+    	  var errors = '';
+    	  var nn = 0;
+
+    	  type_name = $.trim($('#type_name').val()); 
+    	  if(type_name.length < 1) {
+    	  	errors += "{{Lang::get('mowork.nodetype_required')}} \n";	
+    		}
+    	$('.pull-left').each(function(){
+      		if($(this).find('input').is(":checked")){
+      			nn++;
+      		}
+      	});
+
+	      if(nn == 0) {
+	      	errors += "{{Lang::get('mowork.department_required')}}";
+	      }
+ 	  
+    	  if(errors.length > 0) {
+    		alert(errors);
+    		return false;
+    	  }
+    	  return true;
+    	  
+    }
+    
+</script>
+
+
+@stop

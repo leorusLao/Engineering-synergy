@@ -1,0 +1,677 @@
+<?php
+
+namespace App\Models;
+use \Exception;
+use Eloquent;
+use DB;
+
+class Plan extends Eloquent {
+    protected $primaryKey = 'plan_id';
+    protected $table = 'plan';
+    protected $fillable = array (
+            'plan_code', 'plan_unicode', 'plan_name', 'part_code', 'plan_type', 'description', 'project_id', 'project_detail_id',
+            'company_id', 'start_date', 'end_date', 'planing_date', 'leader', 'member',
+            'related_info', 'instruction_file', 'work_file', 'status', 'approval_status', 'approval_comment', 'approval_date', 'is_completed', 'has_openissue'
+    );
+    protected $guarded = array (
+            'plan_id'
+    );
+
+    public $timestamps = true;
+
+    public static function createPlan($ary)
+    {   
+        $id = self::create($ary)->id;
+        return $id;
+    }
+
+    public static function infoPlan($where,$field='plan_id')
+    { 
+        $result = self::select($field)->where($where)->first();
+        return $result;
+    }
+
+    //计划列表
+    public static function listPlan($where,$field='plan_id')
+    { 
+        $result = self::select($field)->where($where)->get()->toArray();
+        return $result;
+    }
+
+
+    public static function listPlanIssue($company_id,$sourceid)
+    { 
+        $result = self::select('project.proj_id','project.proj_name','project.proj_code',
+                        'project.proj_type','project.proj_manager','plan.plan_id',
+                        'plan.plan_code','plan.plan_name','plan.plan_type','plan.has_openissue',
+                        'plan.plan_id as issue_id')
+                        ->leftJoin('project','plan.project_id','=','project.proj_id')
+                        ->where(array('plan.company_id'=>$company_id))
+                        ->orderBy('proj_id','desc')
+                        ->paginate(PAGEROWS);
+        return $result;
+    }
+
+    //获取OPENISSUE计划列表
+    public static function listPlanIssueApi($company_id,$page_size,$curr_page)
+    {       
+        try{
+        $total_count = self::select('plan_id')->where(['company_id'=>$company_id])->count();
+            $data['total_page'] = ceil($total_count/$page_size);//总页面数
+            if($data['total_page'] <= $curr_page){ $curr_page = $data['total_page'];}//大于总页面数
+            $size_from = $page_size * ($curr_page - 1);
+            if($size_from < 0){ $size_from = 0; }
+            
+            $data['result'] = self::select('plan_id','plan_code','plan_name','plan_type')
+                                ->where(array('company_id'=>$company_id))
+                                ->offset($size_from)
+                                ->limit($page_size)
+                                ->orderBy('plan_id','desc')
+                                ->get();
+
+            $data['curr_page'] = $curr_page; //当前页面 
+            $data['page_size'] = $page_size; //单页数  
+            $data['total_count'] = $total_count; //总条数
+            return $data;
+        }catch(Exception $e){ return 10003; }
+    }
+
+
+    public static function updatePlan($ary,$where)
+    { 
+        $result = self::where($where)->update($ary);
+        return $result;
+    }
+
+    //零件编号批量删除计划
+    public static function deleteBypartcoded($ary)
+    { 
+        $affect = self::whereIn('part_code',$ary)->delete();
+        return $affect;
+    }
+
+    //获取plan的openissue信息
+    public static function infoPlanIssue($plan_id)
+    { 
+        $result = self::select('plan.plan_code','plan.plan_name','detail.part_name')
+                        ->leftJoin('project_detail as detail','plan.project_detail_id','=','detail.id')
+                        ->where(['plan.plan_id'=>$plan_id])->first();
+        return $result;
+    }
+
+
+    //获取计划列表api
+    public static function listPlansApi($company_id,$plan_status,$ary_search,$page_size,$curr_page)
+    {
+        try{
+            //待提交(1->status：0  and  approval_status：1)
+            if($plan_status == 1){
+                $ary_status = [0]; 
+                $ary_approval_status = [1]; 
+            }
+            //待审批(2->status：0  and  approval_status：2)
+            else if($plan_status == 2){
+                $ary_status = [0]; 
+                $ary_approval_status = [2]; 
+            }
+            //已审批(3->status：0  and  approval_status：3  ||  4)
+            else if($plan_status == 3){
+                $ary_status = [0]; 
+                $ary_approval_status = [3,4]; 
+            }
+            //暂停(5->status：6)
+            else if($plan_status == 5){
+                $ary_status = [6]; 
+                $ary_approval_status = [1,2,3,4]; 
+            }
+            //完结(6->status：9  ||  10)
+            else if($plan_status == 6){
+                $ary_status = [9,10]; 
+                $ary_approval_status = [1,2,3,4]; 
+            }
+            //全部
+            else if($plan_status == 0){
+                $ary_status = [0,6,9,10]; 
+                $ary_approval_status = [1,2,3,4]; 
+            }
+
+            //关键字查询
+            $mydb = DB::table('project');
+            if(!empty($ary_search['plan_code'])){
+                $mydb->whereRaw("locate('".$ary_search["plan_code"]."',plan.plan_code)");
+            }
+            if(!empty($ary_search['plan_name'])){
+                $mydb->whereRaw("locate('".$ary_search["plan_name"]."',plan.plan_name)");
+            }
+            if(!empty($ary_search['proj_code'])){
+                $mydb->whereRaw("locate('".$ary_search["proj_code"]."',project.proj_code)");
+            }
+            if(!empty($ary_search['proj_name'])){
+                $mydb->whereRaw("locate('".$ary_search["proj_name"]."',project.proj_name)");
+            }
+            $clone_mydb = clone($mydb);
+
+            //分页
+            $total_count = $mydb->select('project.proj_id')->join('plan','plan.project_id','=','project.proj_id')
+                                ->where('project.proj_status','!=',5)
+                                ->whereIn('plan.status',$ary_status)
+                                ->whereIn('plan.approval_status',$ary_approval_status)
+                                ->orderBy('project.proj_id','desc')->count();
+            $data['total_page'] = ceil($total_count/$page_size);
+            if($data['total_page'] <= $curr_page){ $curr_page = $data['total_page'];}
+            $size_from = $page_size * ($curr_page - 1);
+            if($size_from < 0){ $size_from = 0; }
+            
+            if($total_count != 0){
+                $data['result'] = $clone_mydb->select('project.proj_id','project.proj_code','project.proj_name')
+                            ->join('plan','plan.project_id','=','project.proj_id')
+                            ->where('project.proj_status','!=',5)
+                            ->whereIn('plan.status',$ary_status)
+                            ->whereIn('plan.approval_status',$ary_approval_status)
+                            ->orderBy('project.proj_id','desc')
+                            ->offset($size_from)
+                            ->limit($page_size)
+                            ->get(); 
+
+                if(!$data['result']->isEmpty()){
+                    foreach($data['result'] as $key=>$value){ 
+                        $res_new = self::select('plan.plan_id','plan.status','plan.plan_code','plan.plan_name',
+                            'plan.plan_type','plan.approval_status')
+                            ->leftJoin('project','plan.project_id','=','project.proj_id')
+                            ->where(['project.proj_id'=>$value->proj_id])
+                            ->whereIn('plan.status',$ary_status)
+                            ->whereIn('plan.approval_status',$ary_approval_status)
+                            ->get();
+                        if(!empty($res_new)){
+                            foreach ($res_new as $key_new => $value_new) {
+                                //0-尚未做具体计划，1-已做，草稿，2-已递交，等待批，3-批准，4-不同意    6-暂停，9-完成 10-完结
+                                if($value_new->approval_status == 0){ 
+                                    //未完成
+                                    $res_new[$key_new]['status'] = 0;
+                                }else if($value_new->status == 6){ 
+                                    //暂停
+                                    $res_new[$key_new]['status'] = 5;
+                                }else if($value_new->status == 9 || $value_new->status == 10 ){ 
+                                    //完结
+                                    $res_new[$key_new]['status'] = 6;
+                                }else if($value_new->approval_status == 1){ 
+                                    //待提交
+                                    $res_new[$key_new]['status'] = 1;
+                                }else if($value_new->approval_status == 2){ 
+                                    //待审批
+                                    $res_new[$key_new]['status'] = 2;
+                                }else if($value_new->approval_status == 3){ 
+                                    //同意
+                                    $res_new[$key_new]['status'] = 3;
+                                }else if($value_new->approval_status == 4){ 
+                                    //不同意
+                                    $res_new[$key_new]['status'] = 4;
+                                }
+                            }
+                            unset($res_new[$key_new]->approval_status);
+                            $data['result'][$key]->plan = $res_new;
+                        }
+                    }
+                }
+
+            }
+            $data['curr_page'] = $curr_page; //当前页面
+            $data['page_size'] = $page_size; //单页数
+            $data['total_count'] = $total_count; //总条数
+            return $data;
+
+        }catch(Exception $e){ return 10003; }   
+    }
+
+
+    //我的任务：获取计划列表api
+    public static function listBoardPlanApi($uid,$company_id,$page_size,$curr_page)
+    {
+        try{
+            //全部
+            $ary_status = [0,6,9,10]; 
+            $ary_approval_status = [1,2,3,4];
+
+            //分页
+            $total_count = DB::table('project')->select('project.proj_id')
+                                ->join('plan','plan.project_id','=','project.proj_id')
+                                ->where(function($query) use($ary_status,$ary_approval_status,$uid){
+                                    $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                            ->whereIn('plan.approval_status',$ary_approval_status)
+                                            ->whereRaw("locate('".$uid."',project.proj_manager_uid)");
+                                })->orWhere(function($query) use($ary_status,$ary_approval_status,$uid){ 
+                                    $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                            ->whereIn('plan.approval_status',$ary_approval_status)
+                                            ->whereRaw("locate('".$uid."',project.member_list)");
+                                })->orderBy('project.proj_id','desc')->count();
+
+            $data['total_page'] = ceil($total_count/$page_size);
+            if($data['total_page'] <= $curr_page){ $curr_page = $data['total_page'];}
+            $size_from = $page_size * ($curr_page - 1);
+            if($size_from < 0){ $size_from = 0; }
+            
+            if($total_count != 0){
+                $data['result'] = DB::table('project')->select('project.proj_id','project.proj_code','project.proj_name')
+                            ->join('plan','plan.project_id','=','project.proj_id')
+                            ->where(function($query) use($ary_status,$ary_approval_status,$uid){
+                                $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                        ->whereIn('plan.approval_status',$ary_approval_status)
+                                        ->whereRaw("locate('".$uid."',project.proj_manager_uid)");
+                            })->orWhere(function($query) use($ary_status,$ary_approval_status,$uid){ 
+                                    $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                            ->whereIn('plan.approval_status',$ary_approval_status)
+                                            ->whereRaw("locate('".$uid."',project.member_list)");
+                            })->orderBy('project.proj_id','desc')
+                            ->offset($size_from)
+                            ->limit($page_size)->get(); 
+                            
+
+                if(!$data['result']->isEmpty()){
+                    foreach($data['result'] as $key=>$value){ 
+                        $res_new = Plan::select('plan.plan_id','plan.status','plan.plan_code',
+                            'plan.plan_name','plan.plan_type','plan.approval_status')
+                            ->leftJoin('project','plan.project_id','=','project.proj_id')                            
+                            ->where(['project.proj_id'=>$value->proj_id])
+                            ->whereIn('plan.status',$ary_status)
+                            ->whereIn('plan.approval_status',$ary_approval_status)
+                            ->get();
+                        if(!empty($res_new)){
+                            foreach ($res_new as $key_new => $value_new) {
+                                //0-尚未做具体计划，1-已做，草稿，2-已递交，等待批，3-批准，4-不同意    6-暂停，9-完成 10-完结
+                                if($value_new->approval_status == 0){ 
+                                    //未完成
+                                    $res_new[$key_new]['status'] = 0;
+                                }else if($value_new->status == 6){ 
+                                    //暂停
+                                    $res_new[$key_new]['status'] = 5;
+                                }else if($value_new->status == 9 || $value_new->status == 10 ){ 
+                                    //完结
+                                    $res_new[$key_new]['status'] = 6;
+                                }else if($value_new->approval_status == 1){ 
+                                    //待提交
+                                    $res_new[$key_new]['status'] = 1;
+                                }else if($value_new->approval_status == 2){ 
+                                    //待审批
+                                    $res_new[$key_new]['status'] = 2;
+                                }else if($value_new->approval_status == 3){ 
+                                    //同意
+                                    $res_new[$key_new]['status'] = 3;
+                                }else if($value_new->approval_status == 4){ 
+                                    //不同意
+                                    $res_new[$key_new]['status'] = 4;
+                                }
+                            }
+                            unset($res_new[$key_new]->approval_status);
+                            $data['result'][$key]->plan = $res_new;
+                        }
+                    }
+                }
+
+            }
+            $data['curr_page'] = $curr_page; //当前页面
+            $data['page_size'] = $page_size; //单页数
+            $data['total_count'] = $total_count; //总条数
+            return $data;
+
+        }catch(Exception $e){ return 10003; }   
+    }
+
+
+
+    //我的任务：部门计划列表api
+    public static function listDepartmentPlanApi($uid,$company_id,$dep_id,$page_size,$curr_page)
+    {
+        //try{
+            //全部
+            $ary_status = [0,6,9,10]; 
+            $ary_approval_status = [1,2,3,4];
+
+            //分页
+            $total_count = DB::table('project')->select('project.proj_id')
+                                ->join('plan','plan.project_id','=','project.proj_id')
+                                ->join('plan_task','plan_task.plan_id','=','plan.plan_id')
+                                ->where(function($query) use($ary_status,$ary_approval_status,$uid,$dep_id){
+                                    $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                            ->whereIn('plan.approval_status',$ary_approval_status)
+                                            ->whereRaw("locate('".$uid."',project.proj_manager_uid)")
+                                            ->where('plan_task.department','=',$dep_id);
+                                })->orWhere(function($query) use($ary_status,$ary_approval_status,$uid,$dep_id){ 
+                                    $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                            ->whereIn('plan.approval_status',$ary_approval_status)
+                                            ->whereRaw("locate('".$uid."',project.member_list)")
+                                            ->where('plan_task.department','=',$dep_id);
+                                })->orderBy('project.proj_id','desc')->count();
+
+            $data['total_page'] = ceil($total_count/$page_size);
+            if($data['total_page'] <= $curr_page){ $curr_page = $data['total_page'];}
+            $size_from = $page_size * ($curr_page - 1);
+            if($size_from < 0){ $size_from = 0; }
+            
+            if($total_count != 0){
+                $data['result'] = DB::table('project')->select('project.proj_id','project.proj_code','project.proj_name')
+                            ->join('plan','plan.project_id','=','project.proj_id')
+                            ->join('plan_task','plan_task.plan_id','=','plan.plan_id')
+                            ->where(function($query) use($ary_status,$ary_approval_status,$uid,$dep_id){
+                                $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                        ->whereIn('plan.approval_status',$ary_approval_status)
+                                        ->whereRaw("locate('".$uid."',project.proj_manager_uid)")
+                                        ->where('plan_task.department','=',$dep_id);
+                            })->orWhere(function($query) use($ary_status,$ary_approval_status,$uid,$dep_id){ 
+                                $query->where('project.proj_status','!=',5)->whereIn('plan.status',$ary_status)
+                                        ->whereIn('plan.approval_status',$ary_approval_status)
+                                        ->whereRaw("locate('".$uid."',project.member_list)")
+                                        ->where('plan_task.department','=',$dep_id);
+                            })->orderBy('project.proj_id','desc')
+                            ->offset($size_from)
+                            ->limit($page_size)->get(); 
+                            
+
+                if(!$data['result']->isEmpty()){
+                    foreach($data['result'] as $key=>$value){ 
+                        $res_new = Plan::select('plan.plan_id','plan.status','plan.plan_code',
+                            'plan.plan_name','plan.plan_type','plan.approval_status')
+                            ->leftJoin('project','plan.project_id','=','project.proj_id')                            
+                            ->where(['project.proj_id'=>$value->proj_id])
+                            ->whereIn('plan.status',$ary_status)
+                            ->whereIn('plan.approval_status',$ary_approval_status)
+                            ->get();
+                        if(!empty($res_new)){
+                            foreach ($res_new as $key_new => $value_new) {
+                                //0-尚未做具体计划，1-已做，草稿，2-已递交，等待批，3-批准，4-不同意    6-暂停，9-完成 10-完结
+                                if($value_new->approval_status == 0){ 
+                                    //未完成
+                                    $res_new[$key_new]['status'] = 0;
+                                }else if($value_new->status == 6){ 
+                                    //暂停
+                                    $res_new[$key_new]['status'] = 5;
+                                }else if($value_new->status == 9 || $value_new->status == 10 ){ 
+                                    //完结
+                                    $res_new[$key_new]['status'] = 6;
+                                }else if($value_new->approval_status == 1){ 
+                                    //待提交
+                                    $res_new[$key_new]['status'] = 1;
+                                }else if($value_new->approval_status == 2){ 
+                                    //待审批
+                                    $res_new[$key_new]['status'] = 2;
+                                }else if($value_new->approval_status == 3){ 
+                                    //同意
+                                    $res_new[$key_new]['status'] = 3;
+                                }else if($value_new->approval_status == 4){ 
+                                    //不同意
+                                    $res_new[$key_new]['status'] = 4;
+                                }
+                            }
+                            unset($res_new[$key_new]->approval_status);
+                            $data['result'][$key]->plan = $res_new;
+                        }
+                    }
+                }
+
+            }
+            $data['curr_page'] = $curr_page; //当前页面
+            $data['page_size'] = $page_size; //单页数
+            $data['total_count'] = $total_count; //总条数
+            return $data;
+
+       // }catch(Exception $e){ return 10003; }   
+    }
+
+
+
+    //修改计划基础信息
+    public static function updateStatusApi($plan_id,$plan_status)
+    {
+
+        DB::beginTransaction();
+        try{
+            $plandb = DB::table('plan');
+            $taskdb = DB::table('plan_task');
+            //暂停操作
+            if($plan_status==1){ 
+                $ary_status = array('0');
+                $plandb->whereIn('status',$ary_status);
+                $plan_status = 6;
+            }
+            //完结操作
+            else if($plan_status==2){ 
+                $ary_status = array('0','6');
+                $plandb->whereIn('status',$ary_status);
+                $taskdb->where(['plan_id'=>$plan_id])->update(['status'=>2]);
+                $plan_status = 10;
+            }
+            //反完结操作
+            else if($plan_status==3){ 
+                $ary_status = array('9','10');
+                $plandb->whereIn('status',$ary_status);
+                $taskdb->where(['plan_id'=>$plan_id])->update(['status'=>0]);
+                $plan_status = 0;
+            }
+            //恢复操作
+            else if($plan_status==4){ 
+                $ary_status = array('6');
+                $plandb->whereIn('status',$ary_status);
+                $plan_status = 0;
+            }
+            //提交审批操作
+            else if($plan_status==5){ 
+                $ary_status = array('0','6');
+                $ary_approval_status = array('1');
+                $plandb->whereIn('status',$ary_status);
+                $plandb->whereIn('approval_status',$ary_approval_status);
+                $plan_status = 2;
+            }
+
+            $result = $plandb->where(['plan_id'=>$plan_id])->update(['status'=>$plan_status]);
+
+        }catch(Exception $e){ 
+            DB::rollback(); 
+            return 10003; 
+        }
+
+        DB::commit();
+        return $result;
+
+    }
+
+
+
+    //获取单个计划基本信息api
+    public static function getBaseInfoApi($plan_id)
+    {
+        try{
+            $result = DB::table('plan')->select('project.customer_id','plan.plan_code','plan.plan_id',
+                                'plan.plan_name','plan.plan_type','project.proj_code',
+                                'project.proj_id','project.proj_name','project.customer_id',
+                                'company.company_code as customer_code','company.company_name as customer_name',
+                                'plan.status','plan.approval_status')
+                                ->join('project','project.proj_id','=','plan.project_id')
+                                ->leftJoin('company','company.company_id','=','project.customer_id')
+                                ->where(['plan.plan_id'=>$plan_id])->first();
+            return $result;
+        }catch(Exception $e){ return 10003; }   
+    }
+
+
+
+    //获取单个计划节点信息api
+    public static function getNodeInfoApi($plan_id)
+    {
+        try{
+            $result = DB::table('plan_task')->select('plan_task.task_id as node_id',
+                                'plan_task.node_no as node_code','plan_task.name as node_name',
+                                'department.name as dep_name','plan_task.parent_id')
+                                ->leftJoin('department','department.dep_id','=','plan_task.department')
+                                ->where(['plan_task.plan_id'=>$plan_id])->get();
+            if(!empty($result)){ 
+                $ary_unset = [];
+                //放入子节点
+                foreach ($result as $key_first => $value_first) {
+                    foreach ($result as $key_second => $value_second) {
+                        if($value_first->node_id == $value_second->parent_id){ 
+                            $result[$key_first]->son_node = 1;
+                            $result[$key_first]->list_sonnode[] = $value_second;
+                            $ary_unset[] = $value_second->node_id;
+                        }
+                    }
+                }
+                foreach ($result as $key => $value) {
+                    foreach ($ary_unset as $key_unset => $value_unset) {
+                        if($value_unset == $value->node_id){ 
+                            unset($result[$key]);
+                        }
+                    }
+                }
+            }
+            return $result;
+        }catch(Exception $e){ return 10003; }   
+    }
+
+
+    //提交计划审批
+    public static function updateApprovalApi($plan_id)
+    { 
+        try{
+            $result = self::whereIn('plan_id',$plan_id)->where(['approval_status'=>1])->update(['approval_status'=>2]);
+            return $result;
+        }catch(Exception $e){ return 10003; }  
+    }
+
+
+    //提交计划审批结果
+    public static function updateApprovalResultApi($uid,$plan_id,$approval_status,$approval_comment)
+    { 
+        try{
+            $result = self::whereIn('plan_id',$plan_id)->where(['approval_status'=>2])
+                            ->update(['approval_status'=>$approval_status,'approval_person'=>$uid,
+                            'progress_remark'=>$approval_comment]);
+            return $result;
+        }catch(Exception $e){ return 10003; }  
+    }
+
+    //新建一个计划
+    public static function createPartPlanApi($ary)
+    {   
+        try{
+            $result = self::create($ary);
+            return $result;
+        }catch(Exception $e){ return 10003; }  
+    }
+
+    //修改一个计划
+    public static function updatePartPlanApi($ary,$where)
+    { 
+        try{
+            $result = self::where($where)->update($ary);
+            return $result;
+        }catch(Exception $e){ return 10003;}
+    }
+
+
+    //获取立项中计划列表api
+    public static function listPartPlanApi($proj_id,$page_size,$curr_page)
+    {
+        try{
+            //分页
+            $total_count = Plan::select('plan.plan_id')
+                                ->join('project_detail','project_detail.id','=','plan.project_detail_id')
+                                ->join('project','project.proj_id','=','plan.project_id')
+                                ->where('project.proj_status','!=',5)
+                                ->where('plan.project_id','=',$proj_id)
+                                ->where('project_detail.status','=',0)
+                                ->orderBy('plan.plan_id','desc')->count();
+            $data['total_page'] = ceil($total_count/$page_size);
+            if($data['total_page'] <= $curr_page){ $curr_page = $data['total_page'];}
+            $size_from = $page_size * ($curr_page - 1);
+            if($size_from < 0){ $size_from = 0; }
+            
+            if($total_count != 0){
+                $data['result'] = Plan::select('plan.plan_id','plan.project_detail_id','plan.plan_name',
+                            'project_detail.part_name')
+                            ->join('project_detail','project_detail.id','=','plan.project_detail_id')
+                            ->join('project','project.proj_id','=','plan.project_id')
+                            ->where('project.proj_status','!=',5)
+                            ->where('plan.project_id','=',$proj_id)
+                            ->where('project_detail.status','=',0)
+                            ->orderBy('plan.plan_id','desc')
+                            ->offset($size_from)
+                            ->limit($page_size)
+                            ->get();
+            }
+            $data['curr_page'] = $curr_page; //当前页面
+            $data['page_size'] = $page_size; //单页数
+            $data['total_count'] = $total_count; //总条数
+            return $data;
+
+        }catch(Exception $e){ return 10003; }   
+    }
+
+
+    //删除计划
+    public static function deletePartPlanApi($plan_id)
+    { 
+        $affect = self::where(['plan_id'=>$plan_id])->where('status','=',0)->delete();
+        return $affect;
+    }
+
+
+    //获取plan的openissue信息
+    public static function getPartPlanApi($plan_id)
+    { 
+        $result = self::select('plan.company_id','plan.description','plan.member','plan.project_detail_id as detail_id',
+                        'plan.end_date','plan.leader','plan.plan_name','plan.plan_type','plan.project_id',
+                        'plan.start_date','user.fullname as member_name','detail.part_name',
+                        'user_leader.fullname as leader_name','plan_type.type_name')
+                        ->leftJoin('user','user.uid','=','plan.member')
+                        ->leftJoin('user as user_leader','user_leader.uid','=','plan.member')
+                        ->leftJoin('plan_type','plan_type.type_id','=','plan.plan_type')
+                        ->leftJoin('project_detail as detail','detail.id','=','plan.project_detail_id')
+                        ->where(['plan_id'=>$plan_id])->first();
+        if($result){ 
+            //if(strpos($result['member'],',')>0){
+                $result['member_name'] = User::select(DB::raw("group_concat(fullname) as fullname"))
+                            ->whereRaw("find_in_set(uid,'".$result['member']."')")->first()->fullname;
+
+                $ary_id = explode(',',$result['member']);
+                $ary_member = explode(',',$result['member_name']);
+                $ary_member_list = array_combine($ary_id,$ary_member);
+                foreach ($ary_member_list as $key => $value) {
+                    $ary_chunk_new[$key]['id'] = $key;
+                    $ary_chunk_new[$key]['name'] = $value;
+                }
+                $ary_chunk_new = array_values($ary_chunk_new);
+                
+                $result['ary_member'] = $ary_chunk_new;
+
+            //}
+            //if(strpos($result['leader'],',')>0){
+                $result['leader_name'] = User::select(DB::raw("group_concat(fullname) as fullname"))
+                            ->whereRaw("find_in_set(uid,'".$result['leader']."')")->first()->fullname;
+        
+                $ary_id = explode(',',$result['leader']);
+                $ary_member = explode(',',$result['leader_name']);
+                $ary_member_list = array_combine($ary_id,$ary_member);
+                foreach ($ary_member_list as $key => $value) {
+                    $ary_chunk_leader[$key]['id'] = $key;
+                    $ary_chunk_leader[$key]['name'] = $value;
+                }
+                $ary_chunk_leader = array_values($ary_chunk_leader);
+                
+                $result['ary_leader_list'] = $ary_chunk_leader;                    
+            //}
+        }
+        return $result;
+    }
+
+
+    //该公司是否有要删除的计划类型
+    static public function isExistPlanType($type_id, $company_id){
+        $existed = self::whereRaw('(plan_type='. $type_id .')')->where('company_id',$company_id)->first();
+        if($existed) return true;
+        return false;
+    }
+
+
+
+}
+
+?>

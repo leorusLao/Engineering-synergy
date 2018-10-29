@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name=”viewport” content=”width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes” />
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <!-- Bootstrap core CSS -->
+    <title> Mowork-Join Us</title>
+    <link href="http://www.motooling.com/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://www.motooling.com/css/common.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>-->
+
+    <link href="http://www.motooling.com/css/about.css" rel="stylesheet">
+</head>
+<body style="min-width: 1300px;overflow-x: hidden">
+<header>
+
+</header>
+<div class="navbar-wrapper">
+    <div class="container">
+        <nav class="navbar  navbar-static-top">
+            <div class="container">
+                <div class="navbar-header ">
+                    <a class="navbar-brand" href="#"><img src="http://www.motooling.com/img/logo.png"></a>
+                    <ul class="nav navbar-nav">
+                        <li><a href="../index.html">MoWork</a></li>
+                        <li><a href="http://www.motooling.com">MoTooling</a></li>
+                        <li><a href="../about.html">About Us</a></li>
+                        <li><a href="javascript:alert('coming...')">ZhiHu</a></li>
+                        <li><a href="javascript:alert('coming...')">News</a></li>
+                        <li><a href="#footer">Contact Us</a></li>
+                        <li><a href="#">Join Us</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">EN <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="http://www.mowork.cn/articles/1511272533390.html">中文</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+    </div>
+</div>
+<section class="article-content content">
+    <div><h1 class="ql-align-center"><strong style="background-color: white; color: rgb(65, 110, 182);">广阔天地</strong></h1><p class="ql-align-center"><br></p><p>	   近10年来，移动互联网应用深入到社会的各个角落，个人的社交（微信）、出行（滴滴）、购物（电商）、支付（支付宝）等生活方式发生了巨大的变革，2C的应用成就了BAT三大互联网巨头公司。今天，BAT们倡导的“互联网+”、“信息化工业化深度融合——两化融合”、“工业云”等等战略，预示一<span style="color: rgb(67, 67, 67);">个新的大</span><strong>机遇，移动工业互联网2B的应用</strong>正在悄然到来。2017年10月13日，国务院办公厅印发的《关于积极推进供应链创新与应用的指导意见》中，提出“<strong>推进供应链协同制造，发展服务型制造，促进制造供应链可视化和智能化”，</strong>把移动工业互联网的应用，提升到国家战略高度，具有实质性、可操作的指导意义，将极大推动工业互联网产业跨越式发展。</p><p>	   <strong style="color: rgb(65, 110, 182);">MoWork团队</strong><strong>致力于</strong><strong style="color: rgb(65, 110, 182);">MoWork制造工程协同平台</strong><span style="background-color: white;">和</span><strong style="color: rgb(65, 110, 182);">MoTooling工装制造管理系统云平台</strong><span style="background-color: white;">的开发和SaaS服务业务，将为中国工业制造业企业（传统产业）插上互联网的双翅，实现中国制造强国之梦。</span></p><p><br></p><h1 class="ql-align-center"><strong style="background-color: white; color: rgb(65, 110, 182);">大有作为</strong></h1><p class="ql-align-center"><br></p><p><strong style="color: rgb(65, 110, 182);">【MoWork制造工程协同平台】，工业互联网工程协同平台</strong></p><p>	  <strong style="color: rgb(65, 110, 182);">MoWork</strong><span style="color: black; background-color: white;">制造工程协同平台，以整机项目为动力源，整机厂协同一级供应商、二级供应商和工装制造企业，共同完成新机型项目的制造工程开发。</span></p><p><strong style="color: rgb(65, 110, 182);">【MoTooling工装制造管理系统】工业互联网基础云平台</strong></p><p>	  <span style="background-color: white; color: black;">富士康董事长郭台铭先生曾经说“模具是工业之母，工业工程是工业之父”。工装制造是工业互联网的基石。</span><strong style="color: rgb(65, 110, 182);">MoTooling</strong><span style="color: black; background-color: white;">作为成熟的工装制造企业信息管理系统，为工装制造企业提供全方位的SaaS云服务，快速帮助传统制造企业建立自己的工业云平台。</span></p><p>	</p><p>	   <span style="background-color: white;">依托这两个互联互通的工业互联网平台，实时采集车间生产数据、设备运转状态，即时统计员工生产量，查询客户项目进程，实现制造管理的可视化功能；AI智能技术，推动企业向智能化发展。通过可视化、智能化，实现工业“</span><strong style="background-color: white;">智造</strong><span style="background-color: white;">”，帮助企业快速跨入工业4.0时代。</span></p><p><br></p><h1 class="ql-align-center"><strong style="background-color: white; color: rgb(65, 110, 182);">诚邀有志之士</strong></h1><p class="ql-align-center"><br></p><p><strong style="color: rgb(65, 110, 182);">行业合伙人：</strong></p><p>	   汽车、船舶、医药、消费类电子、机械等制造业各行业，以及制造业的某些专业细分领域，如电池、喇叭等专业配套行业有20年以上工程管理经验，以及企业运营管理经验;</p><p>       在业内享有良好的声誉和丰富的人脉资源;</p><p>       年龄45岁左右，本科以上学历，有志在工业互联网应用领域拓展一片新天地。</p><p><br></p><p><strong style="color: rgb(65, 110, 182);">区域销售经理：</strong></p><p>	   1-3年以上销售经验，有制造业各行业或某个细分领域工作经验优先;</p><p>       形象气质佳，性格开朗，善于交流，有亲和力，反应敏捷，有责任心；</p><p>       抗压能力强，热爱学习，主动、积极、乐观，上进心强；</p><p>       本科以上学历，有跨国企业工作经验或海归者优先。</p><p><strong>工作地点：</strong>华南、华东、华中、西南、华北、东北</p><p><br></p><p><strong style="color: rgb(65, 110, 182);">区域运营经理：</strong></p><p>       在汽车、船舶、医药、消费类电子、机械等等制造业各行业，或制造业的某些细分领域、细分行业如电池、喇叭等专业配套行业有5年以上工程开发、品质/体系管理工作经验，熟知管理体系和流程;  </p><p>      年龄30-40岁，形象好、气质佳，语音表达能力强;</p><p>      男性身高1.7米以上，女性1.65米以上;</p><p>      本科以上学历，有跨国企业工作经历或海归者优先。</p><p><strong>工作地点：</strong>华南、华东、华中、西南、华北、东北</p><p><br></p><p><br></p><p><strong style="color: rgb(65, 110, 182);">有意者请发送简历至：</strong></p><p>hr@mowork.cn</p><p>或电话咨询：</p><p>May Wang, 17376863715</p></div>
+</section>
+
+<div id="float" class="float-on">
+
+    <div class="arrow-off" id="arrow-off">
+        <img src="../images/float/arrow-off.png" alt="">
+    </div>
+    <div class="arrow-on" id="arrow-on">
+        <img src="../images/float/arrow-on.png" alt="">
+    </div>
+    <ul class="qrcode" >
+        <li>
+            <img src="../images/float/mt.png" alt="" width="100">
+            <p>MoTooling</p>
+        </li>
+        <li>
+            <img src="../images/float/mw.png" alt="" width="100" >
+            <p>MoWork</p>
+        </li>
+
+    </ul>
+</div>
+
+<div class="footer" id="footer">
+
+    <div class="content">
+        <div class="contact">
+            <p class="phone">0755-26718823</p>
+            <p class="work-time">From Monday to Friday 08:00-17:30</p>
+            <br>
+            <ul class="qrcodes">
+                <li>
+                    <img src="../images/footer/mt.png" alt="" width="100">
+                    <p>MoTooling</p>
+                </li>
+                <li>
+                    <img src="../images/footer/mw.png" width="100">
+                    <p>MoWork</p>
+                </li>
+            </ul>
+        </div>
+
+        <div class="address">
+            <p class="company">Shenzhen Webs Technology Co. Ltd</p>
+            <br>
+            <p> No.13,Lang Shan Road,North District,Nanshan District Hi-Tech Zone,Shenzhen,China</p>
+            <p> Room 605-607,6rd Floor,building A,Thunis Science Park</p>
+            <br>
+            <p><a href="mailto:support@mowork.cn">support@mowork.cn</a></p>
+            <br>
+            <br>
+            <p>  Copyright &copy; 2017 webs-soft  <a style="text-decoration:underline" target="_blank" href="http://www.miitbeian.gov.cn">粤ICP备1709237号</a></p>
+        </div>
+    </div>
+
+</div>
+
+<script src="../../js/jquery.mini.js"></script>
+<script src="../../js/bootstrap.min.js"></script>
+<script>
+    document.querySelector('#arrow-off').addEventListener('click',function () {
+        document.querySelector('#float').setAttribute('class','float-on')
+    })
+    document.querySelector('#arrow-on').addEventListener('click',function () {
+        document.querySelector('#float').setAttribute('class','float-off')
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "d27dccee1b5a949aa66f96f3895b22f7",
+    "packages": [
+        {
+            "name": "henter/wechat-oauth",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/henter/WeChat-OAuth.git",
+                "reference": "0e5f72672446da3b0e18ed00367d6ab546f608a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/henter/WeChat-OAuth/zipball/0e5f72672446da3b0e18ed00367d6ab546f608a9",
+                "reference": "0e5f72672446da3b0e18ed00367d6ab546f608a9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Henter\\WeChat": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Henter",
+                    "email": "henter@henter.me"
+                }
+            ],
+            "description": "WeChat OAuth SDK",
+            "keywords": [
+                "login",
+                "oauth",
+                "wechat",
+                "wechat-oauth",
+                "wechatlogin",
+                "wechatoauth",
+                "weixin",
+                "weixin-oauth",
+                "weixinlogin",
+                "weixinoauth"
+            ],
+            "time": "2015-12-28 08:35:57"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "henter/wechat-oauth": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.6.4"
+    },
+    "platform-dev": []
+}
